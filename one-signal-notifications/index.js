@@ -2,6 +2,7 @@ var sendNotification = function(data) {
     var headers = {
       "Content-Type": "application/json; charset=utf-8",
       "Authorization": "Basic YWU5ODI4YzUtNTU0Ni00M2ZiLWFjY2ItZWI3NWE4ZjUyNDll"
+      //################################################
     };
     
     var options = {
@@ -31,7 +32,7 @@ var sendNotification = function(data) {
   
   var message = {
     app_id: "1e9efea7-8568-4adb-acff-42527a5855bf",
-    contents: {"en": "Kalhspera Magka"},
+    contents: {"en": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."},
     included_segments: ["Subscribed Users"]
   };
   
