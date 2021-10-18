@@ -17,7 +17,8 @@ public class MyClass {
             con.setDoInput(true);
 
             con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            con.setRequestProperty("Authorization", "Basic YWU5ODI4YzUtNTU0Ni00M2ZiLWFjY2ItZWI3NWE4ZjUyNDll");
+            con.setRequestProperty("Authorization", "Basic ######################################################");
+                                                     
             con.setRequestMethod("POST");
 
             String strJsonBody = "{"
