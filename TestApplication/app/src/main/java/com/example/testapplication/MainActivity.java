@@ -27,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
         OneSignal.initWithContext(this);
         OneSignal.setAppId(ONESIGNAL_APP_ID);
 
+        //sendNotification();
+
     }
 
 }
