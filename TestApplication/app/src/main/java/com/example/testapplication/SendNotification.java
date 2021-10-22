@@ -4,6 +4,7 @@ package com.example.testapplication;
 import android.app.Notification;
 import android.content.Intent;
 import android.nfc.Tag;
+import android.os.StrictMode;
 import android.util.Log;
 
 import com.onesignal.OSNotificationOpenedResult;
@@ -19,11 +20,11 @@ import java.util.Scanner;
 
 public class SendNotification {
 
-    public static void sendDeviceNotification(String user_id) {
+    public static void sendDeviceNotification() {
         //post a notification
-            try {
+            /*try {
                 JSONObject notificationContent = new JSONObject("{'include_player_ids': ['" + user_id + "']," +
-                        "'title': 'TEST DEVICE'," +
+                        "'headings': {'en': 'TEST DEVICE'}," +
                         "'contents': {'en': 'Hello my friend!'}," +
                         //"'android_background_layout': {'headings_color': 'FFFF0000', 'contents_color': 'FF00FF00'}," +
                         "'android_led_color': 'FF3700B3'," +
@@ -47,10 +48,10 @@ public class SendNotification {
                 });
             } catch (JSONException e) {
                 e.printStackTrace();
-            }
+            }*/
 
 
-       /* try {
+        try {
             String jsonResponse;
 
             URL url = new URL("https://onesignal.com/api/v1/notifications");
@@ -60,18 +61,23 @@ public class SendNotification {
             con.setDoInput(true);
 
             con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            con.setRequestProperty("Authorization", "Basic NGEwMGZmMjItY2NkNy0xMWUzLTk5ZDUtMDAwYzI5NDBlNjJj");
+            con.setRequestProperty("Authorization", "Basic YWU5ODI4YzUtNTU0Ni00M2ZiLWFjY2ItZWI3NWE4ZjUyNDll");
             con.setRequestMethod("POST");
 
             String strJsonBody = "{"
-                    +   "\"app_id\": \"5eb5a37e-b458-11e3-ac11-000c2940e62c\","
+                    +   "\"app_id\": \"1e9efea7-8568-4adb-acff-42527a5855bf\","
+                    +   "\"android_accent_color\": \"FFE9444E\","
                     +   "\"included_segments\": [\"Subscribed Users\"],"
                     +   "\"data\": {\"foo\": \"bar\"},"
+                    +   "\"headings\": {\"en\": \"Test\"},"
                     +   "\"contents\": {\"en\": \"English Message\"}"
                     + "}";
 
 
             System.out.println("strJsonBody:\n" + strJsonBody);
+
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
 
             byte[] sendBytes = strJsonBody.getBytes("UTF-8");
             con.setFixedLengthStreamingMode(sendBytes.length);
@@ -97,7 +103,7 @@ public class SendNotification {
 
         } catch(Throwable t) {
             t.printStackTrace();
-        }*/
+        }
     }
 
 

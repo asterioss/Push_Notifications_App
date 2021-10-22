@@ -19,9 +19,9 @@ import java.math.BigInteger;
 @SuppressWarnings("unused")
 public class NotificationServiceExtension implements OSRemoteNotificationReceivedHandler {
 
-    public NotificationServiceExtension() {
+    /*public NotificationServiceExtension() {
         super();
-    }
+    }*/
 
     @Override
     public void remoteNotificationReceived(Context context, OSNotificationReceivedEvent notificationReceivedEvent) {
@@ -47,6 +47,7 @@ public class NotificationServiceExtension implements OSRemoteNotificationReceive
         });
         JSONObject data = notification.getAdditionalData();
         Log.i("OneSignalExample", "Received Notification Data: " + data);
+        System.out.println("Notification-Service");
 
         // If complete isn't call within a time period of 25 seconds, OneSignal internal logic will show the original notification
         // To omit displaying a notification, pass `null` to complete()

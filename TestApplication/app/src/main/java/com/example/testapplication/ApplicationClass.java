@@ -61,7 +61,7 @@ public class ApplicationClass extends Application {
         OneSignal.setNotificationOpenedHandler(
                 result -> {
                     String actionId = result.getAction().getActionId();
-                    OSNotificationAction.ActionType type = result.getAction().getType(); // "ActionTaken" | "Opened"
+                    //OSNotificationAction.ActionType type = result.getAction().getType(); // "ActionTaken" | "Opened"
 
                     String title = result.getNotification().getTitle();
                     System.out.println("Title:" +title);
@@ -94,9 +94,9 @@ public class ApplicationClass extends Application {
         //System.out.println("EKEIEIIEIE\n");
         String player1_id = "68756dac-67dd-4de3-99bf-f7cba2a99c5e";
         String player2_id = "7158c2c4-cfd6-4ab6-8549-1936b4de68d2";
-        SendNotification.sendDeviceNotification(player1_id);
-        SendNotification.sendDeviceNotification(player2_id);
-        //NotificationServiceExtension.remoteNotificationReceived();
+        //SendNotification.sendDeviceNotification(player1_id);
+        //SendNotification.sendDeviceNotification(player2_id);
+        SendNotification.sendDeviceNotification();
 
 
         /*OneSignal.setNotificationOpenedHandler(result ->
