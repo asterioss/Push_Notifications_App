@@ -11,21 +11,20 @@ public class MyClass {
             String jsonResponse;
 
             URL url = new URL("https://onesignal.com/api/v1/notifications");
-            HttpURLConnection con = (HttpURLConnection)url.openConnection();
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setUseCaches(false);
             con.setDoOutput(true);
             con.setDoInput(true);
 
             con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            con.setRequestProperty("Authorization", "Basic ######################################################");
-                                                     
+            con.setRequestProperty("Authorization", "Basic YWU5ODI4YzUtNTU0Ni00M2ZiLWFjY2ItZWI3NWE4ZjUyNDll");
             con.setRequestMethod("POST");
 
             String strJsonBody = "{"
-                    +   "\"app_id\": \"1e9efea7-8568-4adb-acff-42527a5855bf\","
-                    +   "\"included_segments\": [\"Subscribed Users\"],"
-                    +   "\"data\": {\"foo\": \"bar\"},"
-                    +   "\"contents\": {\"en\": \"English Message\"}"
+                    + "\"app_id\": \"1e9efea7-8568-4adb-acff-42527a5855bf\","
+                    + "\"included_segments\": [\"Subscribed Users\"],"
+                    + "\"url\": \"https://onesignal.com\","
+                    + "\"contents\": {\"en\": \"English Message\"}"
                     + "}";
 
 
@@ -40,20 +39,19 @@ public class MyClass {
             int httpResponse = con.getResponseCode();
             System.out.println("httpResponse: " + httpResponse);
 
-            if (  httpResponse >= HttpURLConnection.HTTP_OK
+            if (httpResponse >= HttpURLConnection.HTTP_OK
                     && httpResponse < HttpURLConnection.HTTP_BAD_REQUEST) {
                 Scanner scanner = new Scanner(con.getInputStream(), "UTF-8");
                 jsonResponse = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
                 scanner.close();
-            }
-            else {
+            } else {
                 Scanner scanner = new Scanner(con.getErrorStream(), "UTF-8");
                 jsonResponse = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
                 scanner.close();
             }
             System.out.println("jsonResponse:\n" + jsonResponse);
 
-        } catch(Throwable t) {
+        } catch (Throwable t) {
             t.printStackTrace();
         }
     }
