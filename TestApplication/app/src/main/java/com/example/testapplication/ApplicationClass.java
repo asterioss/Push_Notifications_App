@@ -62,10 +62,27 @@ public class ApplicationClass extends Application {
                 result -> {
                     String actionId = result.getAction().getActionId();
                     //OSNotificationAction.ActionType type = result.getAction().getType(); // "ActionTaken" | "Opened"
-
                     String title = result.getNotification().getTitle();
-                    System.out.println("Title:" +title);
+                    //System.out.println("Title:" +title);
                     OneSignal.onesignalLog(OneSignal.LOG_LEVEL.VERBOSE, "OSNotificationOpenedResult result: " + result.toString());
+
+                    String launchURL = result.getNotification().getLaunchURL();
+                    JSONObject data = result.getNotification().getAdditionalData();
+                    String customKey;
+                    Log.i("OSNotification", "data set with value: " + data);
+                    if (data != null) {
+                        customKey = data.optString("customkey", null);
+                        if (customKey != null) {
+                            // The following can be used to open an Activity of your choice.
+                            // Replace - getApplicationContext() - with any Android Context.
+                            // Replace - YOURACTIVITY.class with your activity to deep link
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.putExtra("openURL", customKey);
+                            Log.i("OneSignalExample", "openURL = " + customKey);
+                            startActivity(intent);
+                        }
+                    }
                 });
 
         OneSignal.setNotificationWillShowInForegroundHandler(notificationReceivedEvent -> {
@@ -74,8 +91,10 @@ public class ApplicationClass extends Application {
 
             OSNotification notification = notificationReceivedEvent.getNotification();
             JSONObject data = notification.getAdditionalData();
+            //System.out.println(notification.getTitle());
 
             notificationReceivedEvent.complete(notification);
+            //System.out.println(notification.getTitle());
         });
 
         OneSignal.unsubscribeWhenNotificationsAreDisabled(true);
@@ -84,8 +103,8 @@ public class ApplicationClass extends Application {
 
         OneSignal.setRequiresUserPrivacyConsent(true);
         //public void onUserTappedProvidePrivacyConsent(View v) {
-            //will initialize the OneSignal SDK and enable push notifications
-            OneSignal.provideUserConsent(true);
+        //will initialize the OneSignal SDK and enable push notifications
+        OneSignal.provideUserConsent(true);
         //}
         //boolean locationShared = OneSignal.isLocationShared();
 

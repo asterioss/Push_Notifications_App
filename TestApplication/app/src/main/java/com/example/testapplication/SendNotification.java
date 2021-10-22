@@ -67,8 +67,9 @@ public class SendNotification {
             String strJsonBody = "{"
                     +   "\"app_id\": \"1e9efea7-8568-4adb-acff-42527a5855bf\","
                     +   "\"android_accent_color\": \"FFE9444E\","
+                    +   "\"url\": \"https://www.youtube.com\","
                     +   "\"included_segments\": [\"Subscribed Users\"],"
-                    +   "\"data\": {\"foo\": \"bar\"},"
+                    +   "\"data\": {\"customKey\": \"https://www.youtube.com\"},"
                     +   "\"headings\": {\"en\": \"Test\"},"
                     +   "\"contents\": {\"en\": \"English Message\"}"
                     + "}";
