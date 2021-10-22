@@ -32,10 +32,10 @@ public class NotificationServiceExtension implements OSRemoteNotificationReceive
         mutableNotification.setExtender(builder -> {
             // Sets the accent color to Green on Android 5+ devices.
             // Accent color controls icon and action buttons on Android 5+. Accent color does not change app title on Android 10+
-            builder.setColor(new BigInteger("FF00FF00", 16).intValue());
+            //builder.setColor(new BigInteger("FF00FF00", 16).intValue());
             // Sets the notification Title to Red
             Spannable spannableTitle = new SpannableString(notification.getTitle());
-            spannableTitle.setSpan(new ForegroundColorSpan(Color.RED),0,notification.getTitle().length(),0);
+            spannableTitle.setSpan(new ForegroundColorSpan(Color.DKGRAY),0,notification.getTitle().length(),0);
             builder.setContentTitle(spannableTitle);
             // Sets the notification Body to Blue
             Spannable spannableBody = new SpannableString(notification.getBody());
