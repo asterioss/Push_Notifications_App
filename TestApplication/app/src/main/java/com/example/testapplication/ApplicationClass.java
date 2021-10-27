@@ -109,13 +109,13 @@ public class ApplicationClass extends Application {
         //boolean locationShared = OneSignal.isLocationShared();
 
         Log.d("Debug", "ONESIGNAL_SDK_INIT");
-
         //System.out.println("EKEIEIIEIE\n");
         String player1_id = "68756dac-67dd-4de3-99bf-f7cba2a99c5e";
         String player2_id = "7158c2c4-cfd6-4ab6-8549-1936b4de68d2";
         //SendNotification.sendDeviceNotification(player1_id);
         //SendNotification.sendDeviceNotification(player2_id);
         SendNotification.sendDeviceNotification();
+        //EsperTemperature.checkTemperatureEvents();
 
 
         /*OneSignal.setNotificationOpenedHandler(result ->

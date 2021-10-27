@@ -70,8 +70,8 @@ public class SendNotification {
                     +   "\"url\": \"https://www.youtube.com\","
                     +   "\"included_segments\": [\"Subscribed Users\"],"
                     +   "\"data\": {\"customKey\": \"https://www.youtube.com\"},"
-                    +   "\"headings\": {\"en\": \"Test\"},"
-                    +   "\"contents\": {\"en\": \"English Message\"}"
+                    +   "\"headings\": {\"en\": \"TEMPERATURE ALERT\"},"
+                    +   "\"contents\": {\"en\": \"Be careful. Very high temperature!\"}"
                     + "}";
 
 
