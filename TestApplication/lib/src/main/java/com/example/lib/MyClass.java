@@ -1,58 +1,89 @@
 package com.example.lib;
 
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Scanner;
+import java.util.Date;
+import java.util.Random;
 
+import com.espertech.esper.client.Configuration;
+import com.espertech.esper.client.EPAdministrator;
+import com.espertech.esper.client.EPRuntime;
+//import com.espertech.esper.client.*;
+import com.espertech.esper.client.EPServiceProvider;
+import com.espertech.esper.client.EPServiceProviderManager;
+import com.espertech.esper.client.EPStatement;
+import com.espertech.esper.client.EventBean;
+import com.espertech.esper.client.UpdateListener;
+import com.espertech.esper.client.context.*;
+/**
+ * Hello world!
+ *
+ */
 public class MyClass {
-    public static void main(String[] args) {
-        try {
-            String jsonResponse;
+    public static class Temperature {
+        String symbol;
+        Double price;
+        Date timeStamp;
 
-            URL url = new URL("https://onesignal.com/api/v1/notifications");
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setUseCaches(false);
-            con.setDoOutput(true);
-            con.setDoInput(true);
+        public Temperature(String s, double p, long t) {
+            symbol = s;
+            price = p;
+            timeStamp = new Date(t);
+        }
+        public double getPrice() {return price;}
+        public String getSymbol() {return symbol;}
+        public Date getTimeStamp() {return timeStamp;}
 
-            con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            con.setRequestProperty("Authorization", "Basic YWU5ODI4YzUtNTU0Ni00M2ZiLWFjY2ItZWI3NWE4ZjUyNDll");
-            con.setRequestMethod("POST");
-
-            String strJsonBody = "{"
-                    + "\"app_id\": \"1e9efea7-8568-4adb-acff-42527a5855bf\","
-                    + "\"included_segments\": [\"Subscribed Users\"],"
-                    + "\"url\": \"https://onesignal.com\","
-                    + "\"contents\": {\"en\": \"English Message\"}"
-                    + "}";
-
-
-            System.out.println("strJsonBody:\n" + strJsonBody);
-
-            byte[] sendBytes = strJsonBody.getBytes("UTF-8");
-            con.setFixedLengthStreamingMode(sendBytes.length);
-
-            OutputStream outputStream = con.getOutputStream();
-            outputStream.write(sendBytes);
-
-            int httpResponse = con.getResponseCode();
-            System.out.println("httpResponse: " + httpResponse);
-
-            if (httpResponse >= HttpURLConnection.HTTP_OK
-                    && httpResponse < HttpURLConnection.HTTP_BAD_REQUEST) {
-                Scanner scanner = new Scanner(con.getInputStream(), "UTF-8");
-                jsonResponse = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
-                scanner.close();
-            } else {
-                Scanner scanner = new Scanner(con.getErrorStream(), "UTF-8");
-                jsonResponse = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
-                scanner.close();
-            }
-            System.out.println("jsonResponse:\n" + jsonResponse);
-
-        } catch (Throwable t) {
-            t.printStackTrace();
+        @Override
+        public String toString() {
+            return "Temperature: " + price.toString() + ", Time: " + timeStamp.toString();
         }
     }
+
+    private static Random generator=new Random();
+
+    public static void GenerateRandomTick(EPRuntime cepRT){
+        double price = (double) generator.nextInt(60);
+        long timeStamp = System.currentTimeMillis();
+        String symbol = "AAPL";
+        Temperature tick= new Temperature(symbol,price,timeStamp);
+        System.out.println("Sending temperature: " + tick);
+        cepRT.sendEvent(tick);
+    }
+
+    public static class CEPListener implements UpdateListener {
+        public void update(EventBean[] newData, EventBean[] oldData) {
+            //String pricere = (double) newData[0].get("price");
+            //int age = (int) newData[0].get("age");
+            //System.out.println(String.format("Name: %s, Age: %d", name, age));
+            System.out.println("Event received: "
+                    + newData[0].getUnderlying());
+        }
+    }
+
+    public static void main(String args[]) {
+        //The Configuration is meant only as an initialization-time object.
+        //Configuration cepConfig = new Configuration();
+        // We register Ticks as objects the engine will have to handle
+        //ei- cepConfig.addEventType("TemperatureEvent",Temperature.class.getName());
+        // EPServiceProvider epServiceProvider = EPServiceProviderManager.getDefaultProvider();
+        // epServiceProvider.getEPAdministrator().getConfiguration().addEventType("StartEvent", Tick.class);
+        // We setup the engine
+        EPServiceProvider cep = EPServiceProviderManager.getDefaultProvider();
+        //cep.initialize();
+        cep.getEPAdministrator().getConfiguration().addEventType("TemperatureEvent", Temperature.class);
+        EPRuntime cepRT = cep.getEPRuntime();
+
+        // We register an EPL statement (Query)
+        //EPAdministrator cepAdm = cep.getEPAdministrator();
+        EPStatement cepStatement = cep.getEPAdministrator().createEPL("select * from TemperatureEvent " +
+                "where price > 40.0");
+
+        //Attach a listener to the statement
+        cepStatement.addListener(new CEPListener());
+
+        for (int i = 0; i < 5; i++) { GenerateRandomTick(cepRT); }
+        //GenerateRandomTick(cepRT);
+        //System.out.println( "Hello World!" );
+    }
+
+
 }

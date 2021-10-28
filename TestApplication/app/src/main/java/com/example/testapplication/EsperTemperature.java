@@ -12,7 +12,17 @@ import com.espertech.esper.client.EPServiceProviderManager;
 import com.espertech.esper.client.EPStatement;
 import com.espertech.esper.client.EventBean;
 import com.espertech.esper.client.UpdateListener;
-import com.espertech.esper.client.context.*;
+import com.espertech.esper.client.soda.EPStatementObjectModel;
+import com.espertech.esper.client.util.EventRenderer;
+import com.espertech.esper.core.service.ConfiguratorContext;
+import com.espertech.esper.core.service.EPServiceProviderImpl;
+import com.espertech.esper.core.service.EPServiceProviderSPI;
+import com.espertech.esper.util.JavaClassHelper;
+
+import java.net.URI;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 /**
  * Hello world!
  *
@@ -56,6 +66,7 @@ public class EsperTemperature {
             //System.out.println(String.format("Name: %s, Age: %d", name, age));
             System.out.println("Event received: "
                     + newData[0].getUnderlying());
+            SendNotification.sendDeviceNotification();  //na steilw thermokrasia
         }
     }
 
@@ -66,23 +77,31 @@ public class EsperTemperature {
         //ei- cepConfig.addEventType("TemperatureEvent",Temperature.class.getName());
         // EPServiceProvider epServiceProvider = EPServiceProviderManager.getDefaultProvider();
         // epServiceProvider.getEPAdministrator().getConfiguration().addEventType("StartEvent", Tick.class);
-        // We setup the engine
-        EPServiceProvider cep = EPServiceProviderManager.getDefaultProvider();
-        //cep.initialize();
-        cep.getEPAdministrator().getConfiguration().addEventType("TemperatureEvent", Temperature.class);
-        EPRuntime cepRT = cep.getEPRuntime();
+        try {
+            // We setup the engine
+            Configuration config = new Configuration();
+            EPServiceProvider cep = EPServiceProviderManager.getDefaultProvider(config);
+            //cep.initialize();
+            cep.getEPAdministrator().getConfiguration().addEventType("TemperatureEvent", Temperature.class);
+            EPRuntime cepRT = cep.getEPRuntime();
 
-        // We register an EPL statement (Query)
-        //EPAdministrator cepAdm = cep.getEPAdministrator();
-        EPStatement cepStatement = cep.getEPAdministrator().createEPL("select * from TemperatureEvent " +
-                "where price > 40.0");
+            // We register an EPL statement (Query)
+            //EPAdministrator cepAdm = cep.getEPAdministrator();
+            EPStatement cepStatement = cep.getEPAdministrator().createEPL("select * from TemperatureEvent " +
+                    "where price > 40.0");
 
-        //Attach a listener to the statement
-        cepStatement.addListener(new CEPListener());
+            //Attach a listener to the statement
+            cepStatement.addListener(new CEPListener());
 
-        for (int i = 0; i < 5; i++) { GenerateRandomTick(cepRT); }
-        //GenerateRandomTick(cepRT);
-        //System.out.println( "Hello World!" );
+            for (int i = 0; i < 10; i++) {
+                GenerateRandomTick(cepRT);
+            }
+            //GenerateRandomTick(cepRT);
+            //cep.destroy();
+            //System.out.println( "Hello World!" );
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
 

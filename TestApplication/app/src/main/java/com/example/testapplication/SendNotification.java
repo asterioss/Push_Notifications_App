@@ -22,35 +22,6 @@ public class SendNotification {
 
     public static void sendDeviceNotification() {
         //post a notification
-            /*try {
-                JSONObject notificationContent = new JSONObject("{'include_player_ids': ['" + user_id + "']," +
-                        "'headings': {'en': 'TEST DEVICE'}," +
-                        "'contents': {'en': 'Hello my friend!'}," +
-                        //"'android_background_layout': {'headings_color': 'FFFF0000', 'contents_color': 'FF00FF00'}," +
-                        "'android_led_color': 'FF3700B3'," +
-                        //"'url': 'https://onesignal.com'," +
-                        "'android_accent_color': 'FFE9444E'," +
-                        "'android_sound': 'nil'}");
-                System.out.println("LEGEEE:"+notificationContent.toString());
-                OneSignal.userProvidedPrivacyConsent();
-
-                OneSignal.postNotification(notificationContent, new OneSignal.PostNotificationResponseHandler() {
-                    @Override
-                    public void onSuccess(JSONObject response) {
-                        Log.i("OneSignalExample", "postNotification Success: " + response.toString());
-                    }
-
-                    @Override
-                    public void onFailure(JSONObject response) {
-                        Log.e("OneSignalExample", "postNotification Failure: " + response.toString());
-                    }
-                    //return notificationContent;
-                });
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }*/
-
-
         try {
             String jsonResponse;
 

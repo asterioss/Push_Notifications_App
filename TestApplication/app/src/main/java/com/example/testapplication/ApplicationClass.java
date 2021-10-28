@@ -114,8 +114,8 @@ public class ApplicationClass extends Application {
         String player2_id = "7158c2c4-cfd6-4ab6-8549-1936b4de68d2";
         //SendNotification.sendDeviceNotification(player1_id);
         //SendNotification.sendDeviceNotification(player2_id);
-        SendNotification.sendDeviceNotification();
-        //EsperTemperature.checkTemperatureEvents();
+        //SendNotification.sendDeviceNotification();
+        EsperTemperature.checkTemperatureEvents();
 
 
         /*OneSignal.setNotificationOpenedHandler(result ->
