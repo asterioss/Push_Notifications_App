@@ -1,1 +1,2 @@
-# Push_Notifications_Project
+# Push notifications are short messages that pop up on the user’s mobile or desktop, nudging them to take some action. In short, push notifications are alerts that are "pushed" to your devices by apps, even when those apps aren't open. They're designed to catch your attention on smartphones, laptops and desktops.
+This project is an app that sends push notification to an android device using OneSignal API.
