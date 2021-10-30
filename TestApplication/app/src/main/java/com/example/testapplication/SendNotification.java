@@ -20,7 +20,7 @@ import java.util.Scanner;
 
 public class SendNotification {
 
-    public static void sendDeviceNotification() {
+    public static void sendDeviceNotification(double temperature) {
         //post a notification
         try {
             String jsonResponse;
@@ -34,14 +34,15 @@ public class SendNotification {
             con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
             con.setRequestProperty("Authorization", "Basic YWU5ODI4YzUtNTU0Ni00M2ZiLWFjY2ItZWI3NWE4ZjUyNDll");
             con.setRequestMethod("POST");
-
+             int a = 2;
+            //na steilw link sto notification
             String strJsonBody = "{"
                     +   "\"app_id\": \"1e9efea7-8568-4adb-acff-42527a5855bf\","
                     +   "\"android_accent_color\": \"FFE9444E\","
-                    +   "\"url\": \"https://www.youtube.com\","
+                    +   "\"url\": \"https://www.meteo.gr/cf.cfm?city_id=23\","
                     +   "\"included_segments\": [\"Subscribed Users\"],"
-                    +   "\"data\": {\"customKey\": \"https://www.youtube.com\"},"
-                    +   "\"headings\": {\"en\": \"TEMPERATURE ALERT\"},"
+                   // +   "\"data\": {\"customKey\": \"https://www.youtube.com\"},"
+                    +   "\"headings\": {\"en\": \"TEMPERATURE "+temperature+"\"},"
                     +   "\"contents\": {\"en\": \"Be careful. Very high temperature!\"}"
                     + "}";
 

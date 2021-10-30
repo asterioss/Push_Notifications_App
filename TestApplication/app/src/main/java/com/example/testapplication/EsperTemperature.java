@@ -29,17 +29,14 @@ import java.util.Set;
  */
 public class EsperTemperature {
     public static class Temperature {
-        String symbol;
         Double price;
         Date timeStamp;
 
-        public Temperature(String s, double p, long t) {
-            symbol = s;
+        public Temperature(double p, long t) {
             price = p;
             timeStamp = new Date(t);
         }
         public double getPrice() {return price;}
-        public String getSymbol() {return symbol;}
         public Date getTimeStamp() {return timeStamp;}
 
         @Override
@@ -53,20 +50,26 @@ public class EsperTemperature {
     public static void GenerateRandomTick(EPRuntime cepRT){
         double price = (double) generator.nextInt(60);
         long timeStamp = System.currentTimeMillis();
-        String symbol = "AAPL";
-        Temperature tick= new Temperature(symbol,price,timeStamp);
+        Temperature tick= new Temperature(price,timeStamp);
         System.out.println("Sending temperature: " + tick);
         cepRT.sendEvent(tick);
     }
-
+    
     public static class CEPListener implements UpdateListener {
+        static int i=0;
         public void update(EventBean[] newData, EventBean[] oldData) {
-            //String pricere = (double) newData[0].get("price");
-            //int age = (int) newData[0].get("age");
+            //Double temperature = (double) newData[0].get("price");
             //System.out.println(String.format("Name: %s, Age: %d", name, age));
             System.out.println("Event received: "
                     + newData[0].getUnderlying());
-            SendNotification.sendDeviceNotification();  //na steilw thermokrasia
+            //EventBean event = newData[0];
+            //System.out.println("Temperature=" + event.get("price"));
+            //int i;
+            if(i==0) {
+                Double temp = (double) newData[0].get("price");
+                SendNotification.sendDeviceNotification(temp);  //na steilw thermokrasia
+                i++;
+            }
         }
     }
 
@@ -93,12 +96,12 @@ public class EsperTemperature {
             //Attach a listener to the statement
             cepStatement.addListener(new CEPListener());
 
+            //Generate random values
             for (int i = 0; i < 10; i++) {
                 GenerateRandomTick(cepRT);
             }
-            //GenerateRandomTick(cepRT);
+
             //cep.destroy();
-            //System.out.println( "Hello World!" );
         }catch(Exception e){
             e.printStackTrace();
         }
