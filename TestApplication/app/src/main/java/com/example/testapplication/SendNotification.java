@@ -20,7 +20,7 @@ import java.util.Scanner;
 
 public class SendNotification {
 
-    public static void sendDeviceNotification(double temperature) {
+    public static void sendDeviceNotification(int temperature) {
         //post a notification
         try {
             String jsonResponse;
@@ -34,8 +34,6 @@ public class SendNotification {
             con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
             con.setRequestProperty("Authorization", "Basic YWU5ODI4YzUtNTU0Ni00M2ZiLWFjY2ItZWI3NWE4ZjUyNDll");
             con.setRequestMethod("POST");
-             int a = 2;
-            //na steilw link sto notification
             String strJsonBody = "{"
                     +   "\"app_id\": \"1e9efea7-8568-4adb-acff-42527a5855bf\","
                     +   "\"android_accent_color\": \"FFE9444E\","

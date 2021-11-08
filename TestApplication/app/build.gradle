@@ -60,20 +60,15 @@ dependencies {
     //implementation group: 'org.slf4j', name: 'slf4j-android', version: '1.7.25'
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
     //implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    //implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
     // https://mvnrepository.com/artifact/org.codehaus.janino/janino
     //implementation group: 'org.codehaus.janino', name: 'janino', version: '3.0.7'
     // https://mvnrepository.com/artifact/org.codehaus.janino/commons-compiler
     //implementation group: 'org.codehaus.janino', name: 'commons-compiler', version: '3.0.7'
-
-    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa
-    //implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.5.5'
-    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf
-    //implementation group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version: '2.5.5'
-    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf
-    //implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.5.5'
-    // https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api
-    //implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.14.1'
-    //implementation 'com.newrelic.agent.android:android-agent:5.18.1'
+    // https://mvnrepository.com/artifact/commons-io/commons-io
+    implementation group: 'commons-io', name: 'commons-io', version: '2.4'
+    // https://mvnrepository.com/artifact/commons-cli/commons-cli
+    implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
 
     /*For Android*/
     implementation 'androidx.appcompat:appcompat:1.2.0'
@@ -82,6 +77,7 @@ dependencies {
     //implementation files('C:/Users/steli/OneDrive/projects/Push_Notifications_Project/TestApplication/app/libs/asper-4.9.0')
     //implementation files('C:/Users/steli/OneDrive/projects/Push_Notifications_Project/TestApplication/app/libs/esper_android_0_1')
     implementation fileTree(dir: 'C:/Users/steli/OneDrive/projects/Push_Notifications_Project/TestApplication/app/libs', include: ['asper-4.9.0.jar'])
+    implementation fileTree(dir: 'C:/Users/steli/OneDrive/projects/Push_Notifications_Project/TestApplication/app/libs', include: ['amqp-client-5.7.1.jar'])
     //implementation fileTree(dir: 'C:/Users/steli/OneDrive/projects/Push_Notifications_Project/TestApplication/app/libs', include: ['esper_android_0_1.jar'])
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

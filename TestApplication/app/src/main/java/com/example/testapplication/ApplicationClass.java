@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.nfc.Tag;
 import android.os.Parcelable;
+import android.os.StrictMode;
 import android.util.Log;
 
 import com.onesignal.OSInAppMessage;
@@ -19,6 +20,13 @@ import com.onesignal.OneSignal;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
+
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.Channel;
+
+import java.io.IOException;
+import java.util.concurrent.TimeoutException;
 
 public class ApplicationClass extends Application {
     private static final String ONESIGNAL_APP_ID = "1e9efea7-8568-4adb-acff-42527a5855bf";
@@ -58,7 +66,7 @@ public class ApplicationClass extends Application {
         //SendNotification.sendDeviceNotification();
 
 
-        //NotificationServiceExtension.remote
+        //linking notification to URL
         OneSignal.setNotificationOpenedHandler(
                 result -> {
                     //String title = result.getNotification().getTitle();
@@ -111,7 +119,37 @@ public class ApplicationClass extends Application {
         Log.d("Debug", "ONESIGNAL_SDK_INIT");
         //System.out.println("EKEIEIIEIE\n");
         //SendNotification.sendDeviceNotification();
-        EsperTemperature.checkTemperatureEvents();
+        //EsperTemperature.checkTemperatureEvents();
+       /* try {
+            Send.setupConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }*/
+        try {
+            Rabbit_Message.sendMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Rabbit_Message.receiveMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+       /* try {
+            Rabbit_Message.rabbitSend();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }*/
+        //Rabbit_Message.setupConnectionFactory();
+
+
 
     }
 }

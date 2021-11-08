@@ -1,5 +1,6 @@
 package com.example.testapplication;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 
@@ -29,14 +30,14 @@ import java.util.Set;
  */
 public class EsperTemperature {
     public static class Temperature {
-        Double price;
+        Integer price;
         Date timeStamp;
 
-        public Temperature(double p, long t) {
+        public Temperature(int p, long t) {
             price = p;
             timeStamp = new Date(t);
         }
-        public double getPrice() {return price;}
+        public Integer getPrice() {return price;}
         public Date getTimeStamp() {return timeStamp;}
 
         @Override
@@ -47,8 +48,9 @@ public class EsperTemperature {
 
     private static Random generator=new Random();
 
-    public static void GenerateRandomTick(EPRuntime cepRT){
-        double price = (double) generator.nextInt(60);
+    public static void GenerateRandomTick(EPRuntime cepRT, int temp_price){
+        //double price = (double) generator.nextInt(60);
+        int price = temp_price;
         long timeStamp = System.currentTimeMillis();
         Temperature tick= new Temperature(price,timeStamp);
         System.out.println("Sending temperature: " + tick);
@@ -66,14 +68,14 @@ public class EsperTemperature {
             //System.out.println("Temperature=" + event.get("price"));
             //int i;
             if(i==0) {
-                Double temp = (double) newData[0].get("price");
+                int temp = (int) newData[0].get("price");
                 SendNotification.sendDeviceNotification(temp);  //na steilw thermokrasia
                 i++;
             }
         }
     }
 
-    public static void checkTemperatureEvents() {
+    public static void checkTemperatureEvents(ArrayList<Integer> temperatures) {
         //The Configuration is meant only as an initialization-time object.
         //Configuration cepConfig = new Configuration();
         // We register Ticks as objects the engine will have to handle
@@ -91,15 +93,20 @@ public class EsperTemperature {
             // We register an EPL statement (Query)
             //EPAdministrator cepAdm = cep.getEPAdministrator();
             EPStatement cepStatement = cep.getEPAdministrator().createEPL("select * from TemperatureEvent " +
-                    "where price > 40.0");
+                    "where price > 40");
 
             //Attach a listener to the statement
             cepStatement.addListener(new CEPListener());
 
             //Generate random values
-            for (int i = 0; i < 10; i++) {
-                GenerateRandomTick(cepRT);
+            for(int temp : temperatures) {
+                //System.out.print("Temperatureeeeee: "+temp + ", ");
+                GenerateRandomTick(cepRT, temp);
+
             }
+            /*for (int i = 0; i < 10; i++) {
+                GenerateRandomTick(cepRT);
+            }*/
 
             //cep.destroy();
         }catch(Exception e){
