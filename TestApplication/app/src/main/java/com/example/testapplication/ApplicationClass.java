@@ -127,17 +127,24 @@ public class ApplicationClass extends Application {
         } catch (TimeoutException e) {
             e.printStackTrace();
         }*/
-        try {
-            Rabbit_Message.sendMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         try {
             Rabbit_Message.receiveMessage();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        try {
+            Rabbit_Message.sendMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+
+
+
 
 
        /* try {
