@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
+import android.view.View;
 
 import com.onesignal.OSDeviceState;
 import com.onesignal.OSEmailSubscriptionObserver;
@@ -92,6 +93,18 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
         }
 
         Log.i("Debug", "onOSSubscriptionChanged: " + stateChanges);
+    }
+
+    public void onClick(View view) {
+        OSDeviceState device = OneSignal.getDeviceState();
+
+        //get player_id, who press the button
+        String userId = device.getUserId();
+        //System.out.println("PlayerID:"+ userId);
+
+        //prepei na stelnw notification sto player_id pou pataei to koumpi
+        //thelei parametro to player_id (NA GINEI)
+        EsperTemperature.whenButtonClicked();
     }
 }
 

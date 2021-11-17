@@ -120,13 +120,7 @@ public class ApplicationClass extends Application {
         //System.out.println("EKEIEIIEIE\n");
         //SendNotification.sendDeviceNotification();
         //EsperTemperature.checkTemperatureEvents();
-       /* try {
-            Send.setupConnection();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-        }*/
+
 
         try {
             Rabbit_Message.receiveMessage();
@@ -139,23 +133,6 @@ public class ApplicationClass extends Application {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-
-
-
-
-
-
-       /* try {
-            Rabbit_Message.rabbitSend();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-        }*/
-        //Rabbit_Message.setupConnectionFactory();
-
 
 
     }

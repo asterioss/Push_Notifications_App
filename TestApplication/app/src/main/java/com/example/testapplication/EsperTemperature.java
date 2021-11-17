@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.Random;
 
 import com.espertech.esper.client.Configuration;
-import com.espertech.esper.client.EPAdministrator;
 import com.espertech.esper.client.EPRuntime;
 //import com.espertech.esper.client.*;
 import com.espertech.esper.client.EPServiceProvider;
@@ -13,22 +12,13 @@ import com.espertech.esper.client.EPServiceProviderManager;
 import com.espertech.esper.client.EPStatement;
 import com.espertech.esper.client.EventBean;
 import com.espertech.esper.client.UpdateListener;
-import com.espertech.esper.client.soda.EPStatementObjectModel;
-import com.espertech.esper.client.util.EventRenderer;
-import com.espertech.esper.core.service.ConfiguratorContext;
-import com.espertech.esper.core.service.EPServiceProviderImpl;
-import com.espertech.esper.core.service.EPServiceProviderSPI;
-import com.espertech.esper.util.JavaClassHelper;
 
-import java.net.URI;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 /**
  * Hello world!
  *
  */
 public class EsperTemperature {
+    private static int temperature;
     public static class Temperature {
         Integer price;
         Date timeStamp;
@@ -69,10 +59,16 @@ public class EsperTemperature {
             //int i;
             if(i==0) {
                 int temp = (int) newData[0].get("price");
-                SendNotification.sendDeviceNotification(temp);  //na steilw thermokrasia
+                temperature = temp;
+                //SendNotification.sendDeviceNotification(temp);  //temperature as parameter
                 i++;
             }
         }
+    }
+
+    //when button is clicked, then send notification to this user who press the button
+    public static void whenButtonClicked() {
+        SendNotification.sendDeviceNotification(temperature);
     }
 
     public static void checkTemperatureEvents(ArrayList<Integer> temperatures) {
