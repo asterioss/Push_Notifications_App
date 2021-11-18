@@ -30,6 +30,7 @@ import java.util.concurrent.TimeoutException;
 
 public class ApplicationClass extends Application {
     private static final String ONESIGNAL_APP_ID = "1e9efea7-8568-4adb-acff-42527a5855bf";
+    private boolean checking = false;
 
     @Override
     public void onCreate() {
@@ -52,6 +53,8 @@ public class ApplicationClass extends Application {
             public void onDidDismissInAppMessage(OSInAppMessage message) {
                 OneSignal.onesignalLog(OneSignal.LOG_LEVEL.VERBOSE, "MainApplication onDidDismissInAppMessage");
             }
+
+
         };
 
         OneSignal.setInAppMessageLifecycleHandler(handler);
@@ -121,18 +124,25 @@ public class ApplicationClass extends Application {
         //SendNotification.sendDeviceNotification();
         //EsperTemperature.checkTemperatureEvents();
 
-
-        try {
+       /* try {
             Rabbit_Message.receiveMessage();
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
+        //if(checking==false) {
+            /*try {
+                Rabbit_Message.receiveMessage();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-        try {
-            Rabbit_Message.sendMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            try {
+                Rabbit_Message.sendMessage();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }*/
+       // }
+        checking = true;
 
 
     }

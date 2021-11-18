@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 import com.onesignal.OSDeviceState;
 import com.onesignal.OSEmailSubscriptionObserver;
@@ -30,14 +31,41 @@ import java.util.Scanner;
 public class MainActivity extends AppCompatActivity implements OSPermissionObserver,OSSubscriptionObserver {
 
     //private static final String ONESIGNAL_APP_ID = "1e9efea7-8568-4adb-acff-42527a5855bf";
-
+    static boolean checkFirst=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         OneSignal.addPermissionObserver(this);
         OneSignal.addSubscriptionObserver(this);
+
+       /* if(checkFirst==true) System.out.println("already run");
+        else runRabbit();*/
+
+        /*final Button button = findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+           // if(i==0) runRabbit();
+            public void onClick(View v) {
+
+                OSDeviceState device = OneSignal.getDeviceState();
+
+                //get player_id, who press the button
+                String userId = device.getUserId();
+                System.out.println("PlayerID:"+ userId);
+
+                //prepei na stelnw notification sto player_id pou pataei to koumpi
+                //thelei parametro to player_id (NA GINEI)
+                try {
+                    Rabbit_Message.sendMessage();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if(userId!=null) EsperTemperature.whenButtonClicked(userId);
+                else System.out.println("Null UserId. Can't send notification");
+            }
+        });*/
     }
+
 
     /*class RetrieveFeedTask extends AsyncTask<String, Void, RSSFeed> {
 
@@ -102,9 +130,15 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
         String userId = device.getUserId();
         //System.out.println("PlayerID:"+ userId);
 
+        try {
+            Rabbit_Message.sendMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //prepei na stelnw notification sto player_id pou pataei to koumpi
         //thelei parametro to player_id (NA GINEI)
-        EsperTemperature.whenButtonClicked();
+        if(userId!=null) EsperTemperature.whenButtonClicked(userId);
+        else System.out.println("Null UserId. Can't send notification");
     }
 }
 

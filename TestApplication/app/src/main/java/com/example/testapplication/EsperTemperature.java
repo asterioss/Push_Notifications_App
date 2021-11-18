@@ -67,12 +67,12 @@ public class EsperTemperature {
     }
 
     //when button is clicked, then send notification to this user who press the button
-    public static void whenButtonClicked() {
-        SendNotification.sendDeviceNotification(temperature);
+    public static void whenButtonClicked(String playerId) {
+        SendNotification.sendTempetatureNotification(playerId, temperature);
     }
 
     public static void checkTemperatureEvents(ArrayList<Integer> temperatures) {
-        System.out.println("Skata sta moutra");
+        //System.out.println("Skata sta moutra");
         //The Configuration is meant only as an initialization-time object.
         //Configuration cepConfig = new Configuration();
         // We register Ticks as objects the engine will have to handle

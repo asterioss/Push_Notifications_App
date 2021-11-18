@@ -58,6 +58,8 @@ public class Rabbit_Message  {
         factory.setHost("192.168.1.3");
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+         /*Connection connection;
+        Channel channel;*/
         try (Connection connection = factory.newConnection();
              Channel channel = connection.createChannel()) {
             //channel.queueDeclare(TASK_QUEUE_NAME, true, false, false, null);
@@ -65,7 +67,7 @@ public class Rabbit_Message  {
 
             //String message = String.join(" ", argv);
             int i;
-            for(i=1; i<1000; i++) {
+            for(i=1; i<10; i++) {
                 int j = generator.nextInt(60);
                 String message = "" + j;
                 //System.out.println("Message value="+message);
@@ -76,6 +78,8 @@ public class Rabbit_Message  {
                 channel.basicPublish("", QUEUE_NAME, null, message.getBytes(StandardCharsets.UTF_8));
                 System.out.println(" [x] Sent '" + message + "'");
             }
+            /*channel.close();
+            connection.close();*/
 
         }
     }
@@ -106,7 +110,7 @@ public class Rabbit_Message  {
             temps.add(mes);
             j.getAndIncrement();
 
-            if(j.get()==1000) EsperTemperature.checkTemperatureEvents((ArrayList<Integer>) temps);
+            if(j.get()==10) EsperTemperature.checkTemperatureEvents((ArrayList<Integer>) temps);
 
             /*try {
                 doWork(message);
@@ -119,6 +123,8 @@ public class Rabbit_Message  {
             }*/
         };
         channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -> { });
+        //channel.close();
+        //connection.close();
         //channel.basicConsume(TASK_QUEUE_NAME, false, deliverCallback, consumerTag -> { });
         //if(temps.size()!=0)
         //EsperTemperature.checkTemperatureEvents((ArrayList<Integer>) temps);

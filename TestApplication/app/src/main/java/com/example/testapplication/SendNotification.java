@@ -20,7 +20,7 @@ import java.util.Scanner;
 
 public class SendNotification {
 
-    public static void sendDeviceNotification(int temperature) {
+    public static void sendTempetatureNotification(String player_id, int temperature) {
         //post a notification
         try {
             String jsonResponse;
@@ -36,9 +36,10 @@ public class SendNotification {
             con.setRequestMethod("POST");
             String strJsonBody = "{"
                     +   "\"app_id\": \"1e9efea7-8568-4adb-acff-42527a5855bf\","
+                    +   "\"include_player_ids\": [\""+player_id+"\"],"
                     +   "\"android_accent_color\": \"FFE9444E\","
                     +   "\"url\": \"https://www.meteo.gr/cf.cfm?city_id=23\","
-                    +   "\"included_segments\": [\"Subscribed Users\"],"
+                   // +   "\"included_segments\": [\"Subscribed Users\"],"
                    // +   "\"data\": {\"customKey\": \"https://www.youtube.com\"},"
                     +   "\"headings\": {\"en\": \"TEMPERATURE "+temperature+"\"},"
                     +   "\"contents\": {\"en\": \"Be careful. Very high temperature!\"}"
