@@ -26,11 +26,15 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.Channel;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeoutException;
 
 public class ApplicationClass extends Application {
     private static final String ONESIGNAL_APP_ID = "1e9efea7-8568-4adb-acff-42527a5855bf";
     private boolean checking = false;
+    private static Random generator=new Random();
 
     @Override
     public void onCreate() {
@@ -123,12 +127,24 @@ public class ApplicationClass extends Application {
         //System.out.println("EKEIEIIEIE\n");
         //SendNotification.sendDeviceNotification();
         //EsperTemperature.checkTemperatureEvents();
+        List<Integer> temps = new ArrayList<>();   /*arraylist with the temperatures*/
 
-       /* try {
+       /* int i;
+        for(i=0; i<100; i++) {
+            int j = generator.nextInt(100);
+            temps.add(j);
+        }
+        EsperTemperature.checkTemperatureEvents((ArrayList<Integer>) temps);*/
+        try {
             Rabbit_Message.receiveMessage();
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
+        try {
+            Rabbit_Message.sendMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //if(checking==false) {
             /*try {
                 Rabbit_Message.receiveMessage();

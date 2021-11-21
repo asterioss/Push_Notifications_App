@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
 
     //private static final String ONESIGNAL_APP_ID = "1e9efea7-8568-4adb-acff-42527a5855bf";
     static boolean checkFirst=false;
+    static int first=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,20 +125,54 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
     }
 
     public void onClick(View view) {
+        //Intent intent = new Intent(Intent.ACTION_DIAL);
+        OSDeviceState device = OneSignal.getDeviceState();
+
+        //get player_id, who press the button
+        String userId = device.getUserId();
+        //System.out.println("PlayerID:"+ userId);
+        //if(first==0) {
+         /*  try {
+                Rabbit_Message.receiveMessage();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+           // first++;
+        //}*/
+        /*try {
+            Rabbit_Message.sendMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
+
+        //parameters player_id kai arithmos button
+        if(userId!=null) EsperTemperature.whenButtonClicked(userId, 1);
+        else System.out.println("Null UserId. Can't send notification");
+        //startActivity(intent);
+    }
+
+    public void onClickButton2(View view) {
         OSDeviceState device = OneSignal.getDeviceState();
 
         //get player_id, who press the button
         String userId = device.getUserId();
         //System.out.println("PlayerID:"+ userId);
 
-        try {
+        //if(first==0) {
+          /*  try {
+                Rabbit_Message.receiveMessage();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            first++;*/
+        //}
+       /*try {
             Rabbit_Message.sendMessage();
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        //prepei na stelnw notification sto player_id pou pataei to koumpi
-        //thelei parametro to player_id (NA GINEI)
-        if(userId!=null) EsperTemperature.whenButtonClicked(userId);
+        }*/
+
+        if(userId!=null) EsperTemperature.whenButtonClicked(userId, 2);
         else System.out.println("Null UserId. Can't send notification");
     }
 }
