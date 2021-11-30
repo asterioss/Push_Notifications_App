@@ -5,10 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.TextView;
 
 import com.onesignal.OSDeviceState;
 import com.onesignal.OSEmailSubscriptionObserver;
@@ -26,13 +29,49 @@ import org.json.JSONObject;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity implements OSPermissionObserver,OSSubscriptionObserver {
 
     //private static final String ONESIGNAL_APP_ID = "1e9efea7-8568-4adb-acff-42527a5855bf";
     static boolean checkFirst=false;
     static int first=0;
+    CheckBox temp,hum;
+    //TextView OurText;
+    static ArrayList<String> playerstemp = new ArrayList<String>(); // Create an ArrayList object
+    static ArrayList<String> playershum = new ArrayList<String>(); // Create an ArrayList object
+
+    private final static int DELAY = 20000;
+    private final Handler handler = new Handler();
+    private final Timer timer = new Timer();
+    private final TimerTask task = new TimerTask() {
+        private int counter = 0;
+        public void run() {
+            //System.out.println("mphka re11");
+            handler.post(new Runnable() {
+                public void run() {
+                   /* if(counter==4) {
+                        timer.cancel();
+                        return;
+                    }*/
+                    System.out.println("mphka re");
+                    EsperTemperature.sendNotificationbyEsper();
+                    timer.cancel();
+                    //counter++;
+                    //Toast.makeText(MainActivity.this, "test", Toast.LENGTH_SHORT).show();
+                }
+            });
+            /*if(++counter == 4) {
+                System.out.println("telos thread");
+                timer.cancel();
+                call_again(timer, task);
+            }*/
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,50 +169,139 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
 
         //get player_id, who press the button
         String userId = device.getUserId();
-        //System.out.println("PlayerID:"+ userId);
-        //if(first==0) {
-         /*  try {
-                Rabbit_Message.receiveMessage();
-            } catch (Exception e) {
-                e.printStackTrace();
+
+        // Is the view now checked?
+        temp=(CheckBox)findViewById(R.id.checkbox_temp);
+        hum=(CheckBox)findViewById(R.id.checkbox_hum);
+
+        //OurText = findViewById(R.id.textView);
+
+        int k=0, l=0;
+        if(temp.isChecked()){
+            if (playerstemp.contains(userId)) k=1;
+            if(k==0) {
+                playerstemp.add(userId);
+                System.out.println("Player " +userId+ " subscribed to temperatures");
+                //OurText.setText("You subscribed to temperatures");
             }
-           // first++;
-        //}*/
-        /*try {
-            Rabbit_Message.sendMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
+        }
+        else {
+            // Remove the meat
+            if (playerstemp.contains(userId)) k=1;
+            else k=0;
+            if(k==1) {
+                playerstemp.remove(userId);
+                System.out.println("Player " +userId+ " unsubscribed from temperatures");
+                //OurText.setText("You unsubscribed from temperatures");
+            }
+        }
+        if(hum.isChecked()){
+            if (playershum.contains(userId)) l=1;
+            if(l==0) {
+                playershum.add(userId);
+                System.out.println("Player " +userId+ " subscribed to humidities");
+                //OurText.setText("You subscribed to humidities");
+
+            }
+        }
+        else {
+            // I'm lactose intolerant
+            if (playershum.contains(userId)) l=1;
+            else l=0;
+            if(l==1) {
+                playershum.remove(userId);
+                System.out.println("Player " +userId+ " unsubscribed from humidities");
+                //OurText.setText("You unsubscribed from humidities");
+            }
+        }
+        timer.schedule(task, DELAY, DELAY);
+        //timer.cancel();
+
+        //EsperTemperature.sendNotificationbyEsper();
 
         //parameters player_id kai arithmos button
-        if(userId!=null) EsperTemperature.whenButtonClicked(userId, 1);
-        else System.out.println("Null UserId. Can't send notification");
+        /*if(userId!=null) EsperTemperature.whenButtonClicked(userId, 1);
+        else System.out.println("Null UserId. Can't send notification");*/
         //startActivity(intent);
     }
 
-    public void onClickButton2(View view) {
+   /* public void onClickButton2(View view) {
         OSDeviceState device = OneSignal.getDeviceState();
 
         //get player_id, who press the button
         String userId = device.getUserId();
-        //System.out.println("PlayerID:"+ userId);
-
-        //if(first==0) {
-          /*  try {
-                Rabbit_Message.receiveMessage();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            first++;*/
-        //}
-       /*try {
-            Rabbit_Message.sendMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
 
         if(userId!=null) EsperTemperature.whenButtonClicked(userId, 2);
         else System.out.println("Null UserId. Can't send notification");
+    }*/
+    /*epistrefei tous paiktes pou ekanan subscribe sto temperature*/
+    public static ArrayList<String> getPlayersTemp() {
+        return playerstemp;
     }
+    /*epistrefei tous paiktes pou ekanan subscribe sto temperature*/
+    public static ArrayList<String> getPlayersHum() {
+        return playershum;
+    }
+
+   /* public void onCheckboxClicked(View view) {
+        OSDeviceState device = OneSignal.getDeviceState();
+
+        //get player_id, who press the button
+        String userId = device.getUserId();
+
+        // Is the view now checked?
+        boolean checked = ((CheckBox) view).isChecked();
+
+        int k=0;
+        // Check which checkbox was clicked
+        switch(view.getId()) {
+            case R.id.checkbox_temp:
+                if (checked) {
+                    // Put some meat on the sandwich
+                    if (playerstemp.contains(userId)) k=1;
+                    if(k==0) {
+                        playerstemp.add(userId);
+                        System.out.println("Player " +userId+ " subscribed to temperatures");
+                    }
+
+                    EsperTemperature.sendNotificationbyEsper();
+                }
+
+                else {
+                    // Remove the meat
+                    playerstemp.remove(userId);
+                    System.out.println("Player " +userId+ " unsubscribed from temperatures");
+                    for(String temp_player : playerstemp) {
+                        System.out.print("Player: "+temp_player + ", ");
+                        //SendNotification.sendTempetatureNotification(temp_player, temperature);
+                    }
+                }
+                break;
+            case R.id.checkbox_hum:
+                if (checked) {
+                    // Cheese me
+                    if (playershum.contains(userId)) k=1;
+                    if(k==0) {
+                        playershum.add(userId);
+                        System.out.println("Player " +userId+ " subscribed to humidities");
+
+                    }
+                    EsperTemperature.sendNotificationbyEsper();
+                }
+
+                else {
+                    // I'm lactose intolerant
+                    playershum.remove(userId);
+                    System.out.println("Player " +userId+ " unsubscribed from humidities");
+                    for(String temp_player : playershum) {
+                        System.out.print("Player: "+temp_player + ", ");
+                        //SendNotification.sendTempetatureNotification(temp_player, temperature);
+                    }
+                }
+
+                break;
+            // TODO: Veggie sandwich
+        }
+    }*/
 }
 

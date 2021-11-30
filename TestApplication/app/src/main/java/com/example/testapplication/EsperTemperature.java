@@ -129,10 +129,27 @@ public class EsperTemperature {
     }
 
     //when button is clicked, then send notification to this user who press the button
-    public static void whenButtonClicked(String playerId, int i) {
-        if(i==1) SendNotification.sendTempetatureNotification(playerId, temperature);
+    public static void sendNotificationbyEsper() { //String playerId, int i
+        ArrayList<String> playerstemp = MainActivity.getPlayersTemp();
+        ArrayList<String> playershum = MainActivity.getPlayersHum();
+        if(playerstemp.size()!=0) {
+            for(String temp_player : playerstemp) {
+                //System.out.print(temp_player);
+                //System.out.print("Temperatureeeeee: "+temp + ", ");
+                SendNotification.sendTempetatureNotification(temp_player, temperature);
+            }
+        }
+        if(playershum.size()!=0) {
+            for(String temp_player : playershum) {
+                //System.out.print(temp_player);
+                //System.out.print("Temperatureeeeee: "+temp + ", ");
+                SendNotification.sendHumidityNotification(temp_player, humidity);
+            }
+        }
+
+        /*if(i==1) SendNotification.sendTempetatureNotification(playerId, temperature);
         else if(i==2) SendNotification.sendHumidityNotification(playerId, humidity);
-        else System.out.println("Error");
+        else System.out.println("Error");*/
     }
 
     public static void checkTemperatureEvents(ArrayList<Integer> temperatures) {

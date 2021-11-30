@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
 import android.net.Uri;
+import android.net.wifi.p2p.WifiP2pManager;
 import android.nfc.Tag;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.os.StrictMode;
 import android.util.Log;
@@ -29,12 +31,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeoutException;
 
 public class ApplicationClass extends Application {
     private static final String ONESIGNAL_APP_ID = "1e9efea7-8568-4adb-acff-42527a5855bf";
     private boolean checking = false;
     private static Random generator=new Random();
+    //private static int firecount = 0;
+
 
     @Override
     public void onCreate() {
@@ -111,7 +117,7 @@ public class ApplicationClass extends Application {
             notificationReceivedEvent.complete(notification);
             //System.out.println(notification.getTitle());
         });
-
+        //OneSignal.inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification);
         OneSignal.unsubscribeWhenNotificationsAreDisabled(true);
         OneSignal.pauseInAppMessages(true);
         OneSignal.setLocationShared(false);
@@ -145,6 +151,48 @@ public class ApplicationClass extends Application {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        //abcCaller();
+       // while(true) {
+           //this.timer.cancel(); //this will cancel the current task. if there is no active task, nothing happens
+          /*  this.timer = new Timer();
+
+
+        TimerTask action = new TimerTask() {
+                public void run() {
+                    System.out.println("mphka re");
+                    EsperTemperature.sendNotificationbyEsper(); //as you said in the comments: abc is a static method
+                    firecount++;
+
+                    if ( firecount == 5 )
+                        timer.cancel();
+                }
+
+            };
+
+        int i;
+        for(i=0; i<3; i++) {
+            this.timer.schedule(action, 60000); //this starts the task
+            this.timer.cancel();
+            //this.timer.purge();
+        }*/
+
+       /* new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        EsperTemperature.sendNotificationbyEsper();
+                        // your code here
+                    }
+                },
+                40000
+        );*/
+
+        //this.timer.schedule(action, 60000); //this starts the task
+        //}
+
+
+
         //if(checking==false) {
             /*try {
                 Rabbit_Message.receiveMessage();
@@ -157,9 +205,8 @@ public class ApplicationClass extends Application {
             } catch (Exception e) {
                 e.printStackTrace();
             }*/
-       // }
-        checking = true;
 
 
     }
+
 }
