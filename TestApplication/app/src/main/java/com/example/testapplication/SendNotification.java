@@ -20,7 +20,7 @@ import java.util.Scanner;
 
 public class SendNotification {
 
-    public static void sendTempetatureNotification(String player_id, int temperature) {
+    public static void sendTempetatureNotification(String player_id, int temperature, String date) {
         //post a notification
         try {
             String jsonResponse;
@@ -41,8 +41,8 @@ public class SendNotification {
                     +   "\"url\": \"https://www.meteo.gr/cf.cfm?city_id=23\","
                    // +   "\"included_segments\": [\"Subscribed Users\"],"
                    // +   "\"data\": {\"customKey\": \"https://www.youtube.com\"},"
-                    +   "\"headings\": {\"en\": \"TEMPERATURE "+temperature+"\"},"
-                    +   "\"contents\": {\"en\": \"Be careful. Very high temperature!\"}"
+                    +   "\"headings\": {\"en\": \"TEMPERATURE "+temperature+"°C at Heraklion,Crete\"},"
+                    +   "\"contents\": {\"en\": \"Be careful. Very high temperature at "+date+".\"}"
                     + "}";
 
 
@@ -78,7 +78,7 @@ public class SendNotification {
         }
     }
 
-    public static void sendHumidityNotification(String player_id, int humidity) {
+    public static void sendHumidityNotification(String player_id, int humidity, String date) {
         //post a notification
         try {
             String jsonResponse;
@@ -99,8 +99,8 @@ public class SendNotification {
                     +   "\"url\": \"https://www.meteo.gr/cf.cfm?city_id=23\","
                     // +   "\"included_segments\": [\"Subscribed Users\"],"
                     // +   "\"data\": {\"customKey\": \"https://www.youtube.com\"},"
-                    +   "\"headings\": {\"en\": \"HUMIDITY "+humidity+"\"},"
-                    +   "\"contents\": {\"en\": \"Be careful. Very high humidity!\"}"
+                    +   "\"headings\": {\"en\": \"HUMIDITY "+humidity+"% at Heraklion,Crete\"},"
+                    +   "\"contents\": {\"en\": \"Be careful. Very high humidity at "+date+".\"}"
                     + "}";
 
 

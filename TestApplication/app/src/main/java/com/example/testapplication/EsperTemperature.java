@@ -20,6 +20,7 @@ import com.espertech.esper.client.UpdateListener;
 public class EsperTemperature {
     private static int temperature;
     private static int humidity;
+    private static String date_now;
     public static boolean check_hum;
     public static boolean check_temp;
     //private static boolean ckeck_temp;
@@ -110,6 +111,7 @@ public class EsperTemperature {
                 System.out.println("piasame temperature");
                 int temp = (int) newData[0].get("price");
                 if(temp>=40 && temp<60) temperature = temp;
+                date_now = newData[0].get("timeStamp").toString();
 
                 //SendNotification.sendDeviceNotification(temp);  //temperature as parameter
                 //ckeck_temp++;
@@ -120,6 +122,7 @@ public class EsperTemperature {
             if(get_check2()==true) {
                 System.out.println("piasame humidity");
                 int hum = (int) newData[0].get("price");
+                date_now = newData[0].get("timeStamp").toString();
                 humidity = hum;
                 //SendNotification.sendDeviceNotification(temp);  //temperature as parameter
                 //ckeck_hum++;
@@ -136,14 +139,14 @@ public class EsperTemperature {
             for(String temp_player : playerstemp) {
                 //System.out.print(temp_player);
                 //System.out.print("Temperatureeeeee: "+temp + ", ");
-                SendNotification.sendTempetatureNotification(temp_player, temperature);
+                SendNotification.sendTempetatureNotification(temp_player, temperature, date_now);
             }
         }
         if(playershum.size()!=0) {
             for(String temp_player : playershum) {
                 //System.out.print(temp_player);
                 //System.out.print("Temperatureeeeee: "+temp + ", ");
-                SendNotification.sendHumidityNotification(temp_player, humidity);
+                SendNotification.sendHumidityNotification(temp_player, humidity, date_now);
             }
         }
 

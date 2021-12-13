@@ -3,10 +3,13 @@ package com.example.testapplication;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -39,12 +42,14 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
     //private static final String ONESIGNAL_APP_ID = "1e9efea7-8568-4adb-acff-42527a5855bf";
     static boolean checkFirst=false;
     static int first=0;
-    CheckBox temp,hum;
-    //TextView OurText;
+    CheckBox temp, hum;
+    boolean checked1, checked2;
+    TextView OurText;
+    SharedPreferences Preference;
     static ArrayList<String> playerstemp = new ArrayList<String>(); // Create an ArrayList object
     static ArrayList<String> playershum = new ArrayList<String>(); // Create an ArrayList object
 
-    private final static int DELAY = 20000;
+    private final static int DELAY = 25000;
     private final Handler handler = new Handler();
     private final Timer timer = new Timer();
     private final TimerTask task = new TimerTask() {
@@ -78,6 +83,8 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
         setContentView(R.layout.activity_main);
         OneSignal.addPermissionObserver(this);
         OneSignal.addSubscriptionObserver(this);
+
+
 
        /* if(checkFirst==true) System.out.println("already run");
         else runRabbit();*/
@@ -163,6 +170,58 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
         Log.i("Debug", "onOSSubscriptionChanged: " + stateChanges);
     }
 
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        System.out.println("pipees");
+        temp=(CheckBox)findViewById(R.id.checkbox_temp);
+        hum = (CheckBox)findViewById(R.id.checkbox_hum);
+        /*checked = PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean("temp", false);*/
+
+       // assertTrue(Preference.getBoolean("temp",false));
+
+            //boolean checkedFlag = Preference.getBoolean("temp",false);
+           // temp.setChecked(checkedFlag);
+           // System.out.println("checked1:"+checkedFlag);
+        boolean checked1 = PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean("temp", false);
+        temp.setChecked(checked1);
+
+        boolean checked2 = PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean("hum", false);
+        hum.setChecked(checked2);
+
+        //if(checked1==true) temp.setChecked(true);
+        //else temp.setChecked(false);
+        //ActiveActivitiesTracker.activityStarted();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        //Preference = getSharedPreferences("pref", Activity.MODE_PRIVATE);
+        //SharedPreferences.Editor editor = Preference.edit();
+        if(temp.isChecked()) checked1=true;
+        else checked1=false;
+        PreferenceManager.getDefaultSharedPreferences(this).edit()
+                .putBoolean("temp", checked1).commit();
+
+        if(hum.isChecked()) checked2=true;
+        else checked2=false;
+        PreferenceManager.getDefaultSharedPreferences(this).edit()
+                .putBoolean("hum", checked2).commit();
+        //editor.putBoolean("temp", checked1);
+        //editor.commit();
+        System.out.println("skataa");
+        /*PreferenceManager.getDefaultSharedPreferences(this).edit()
+                    .putBoolean("temp", checked).commit();*/
+        //ActiveActivitiesTracker.activityStopped();
+    }
+
+    //SharedPreferences prefs = this.getSharedPreferences("com.example.myapp", Context.MODE_PRIVATE);
+
     public void onClick(View view) {
         //Intent intent = new Intent(Intent.ACTION_DIAL);
         OSDeviceState device = OneSignal.getDeviceState();
@@ -170,20 +229,26 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
         //get player_id, who press the button
         String userId = device.getUserId();
 
+        OurText = findViewById(R.id.textView);
         // Is the view now checked?
-        temp=(CheckBox)findViewById(R.id.checkbox_temp);
-        hum=(CheckBox)findViewById(R.id.checkbox_hum);
+        //temp=(CheckBox)findViewById(R.id.checkbox_temp);
+        //hum=(CheckBox)findViewById(R.id.checkbox_hum);
+        /*boolean checked = PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean("temp", false);
+        temp.setChecked(checked);*/
 
         //OurText = findViewById(R.id.textView);
 
         int k=0, l=0;
         if(temp.isChecked()){
+            temp.setChecked(true);
             if (playerstemp.contains(userId)) k=1;
             if(k==0) {
                 playerstemp.add(userId);
                 System.out.println("Player " +userId+ " subscribed to temperatures");
                 //OurText.setText("You subscribed to temperatures");
             }
+
         }
         else {
             // Remove the meat
@@ -214,6 +279,17 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
                 //OurText.setText("You unsubscribed from humidities");
             }
         }
+        OurText.setText("You subscribed successfully. You can leave the app now.");
+        /*try {
+            Rabbit_Message.receiveMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            Rabbit_Message.sendMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
         timer.schedule(task, DELAY, DELAY);
         //timer.cancel();
 

@@ -150,7 +150,7 @@ public class ApplicationClass extends Application {
             Rabbit_Message.sendMessage();
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }   //edwwww
 
         //abcCaller();
        // while(true) {
