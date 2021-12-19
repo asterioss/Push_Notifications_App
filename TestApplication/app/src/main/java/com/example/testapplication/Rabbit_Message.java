@@ -20,37 +20,6 @@ public class Rabbit_Message  {
     private final static String QUEUE_NAME = "hello";
     private static final String TASK_QUEUE_NAME = "task_queue";
 
-    /*public static void rabbitSend() throws IOException, TimeoutException {
-        ConnectionFactory factory = new ConnectionFactory();
-        //factory.setUri("amqp://guest:guest@192.168.1.4:15672/");
-        //factory.setAutomaticRecoveryEnabled(false);
-        factory.setHost("localhost");
-        //System.out.println("Host="+factory.getHost());
-
-        Thread publishThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(true) {
-                      try (Connection connection = factory.newConnection();
-                      Channel channel = connection.createChannel()) {
-                      channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-                      String message = "Hello World!";
-                      channel.basicPublish("", QUEUE_NAME, null, message.getBytes());
-                      System.out.println(" [x] Sent '" + message + "'");
-                      } catch (Exception e) {
-                          Log.d("", "Connection broken: " + e.getClass().getName());
-                             try {
-                                Thread.sleep(5000); //sleep and then try again
-                             } catch (InterruptedException e1) {
-                                    break;
-                             }
-                      }
-                }
-            }
-       });
-        publishThread.start();
-
-    }*/
     private static Random generator=new Random();
 
     public static void sendMessage() throws Exception {
@@ -149,13 +118,7 @@ public class Rabbit_Message  {
         };
 
         //channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -> { });
-        //channel.close();
-       // connection.close();
-        //channel.close();
-        //connection.close();
         channel.basicConsume(TASK_QUEUE_NAME, false, deliverCallback, consumerTag -> { });
-        //if(temps.size()!=0)
-        //EsperTemperature.checkTemperatureEvents((ArrayList<Integer>) temps);
     }
 
     private static void doWork(String task) {

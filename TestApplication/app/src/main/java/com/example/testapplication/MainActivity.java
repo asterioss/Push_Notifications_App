@@ -44,18 +44,19 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
     static int first=0;
     CheckBox temp, hum;
     boolean checked1, checked2;
+    boolean temper, humid;    /*analoga to subscribe, ginetai true to antistoixo*/
+    String player;    //player_id
     TextView OurText;
-    SharedPreferences Preference;
-    static ArrayList<String> playerstemp = new ArrayList<String>(); // Create an ArrayList object
-    static ArrayList<String> playershum = new ArrayList<String>(); // Create an ArrayList object
+    SharedPreferences Preference;   /*gia to save tou checkbox*/
+    static ArrayList<String> playerstemp = new ArrayList<String>(); // Create an ArrayList with player subscribes to temperatures
+    static ArrayList<String> playershum = new ArrayList<String>(); // Create an ArrayList object with player subscribes to humidities
 
-    private final static int DELAY = 25000;
+    private final static int DELAY = 20000;
     private final Handler handler = new Handler();
     private final Timer timer = new Timer();
     private final TimerTask task = new TimerTask() {
         private int counter = 0;
         public void run() {
-            //System.out.println("mphka re11");
             handler.post(new Runnable() {
                 public void run() {
                    /* if(counter==4) {
@@ -63,10 +64,29 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
                         return;
                     }*/
                     System.out.println("mphka re");
-                    EsperTemperature.sendNotificationbyEsper();
+                    //kalei 2o rabbitmq
+                    int temp,hum;
+                    String date;
+
+                    if(temper==false) temp=0;
+                    else temp = EsperTemperature.get_Temperature();
+                    if(humid==false) hum=0;
+                    else hum = EsperTemperature.get_Humidity();
+                    date = EsperTemperature.get_Date();
+
+                    /*try {
+                        Rabbit_SendEvents.ReceiveEvents(player, temp, hum, date);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }*/
+                    try {
+                        Rabbit_SendEvents.SendEvents(player, temp, hum, date);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    //EsperTemperature.sendNotificationbyEsper();
                     timer.cancel();
                     //counter++;
-                    //Toast.makeText(MainActivity.this, "test", Toast.LENGTH_SHORT).show();
                 }
             });
             /*if(++counter == 4) {
@@ -83,34 +103,6 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
         setContentView(R.layout.activity_main);
         OneSignal.addPermissionObserver(this);
         OneSignal.addSubscriptionObserver(this);
-
-
-
-       /* if(checkFirst==true) System.out.println("already run");
-        else runRabbit();*/
-
-        /*final Button button = findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-           // if(i==0) runRabbit();
-            public void onClick(View v) {
-
-                OSDeviceState device = OneSignal.getDeviceState();
-
-                //get player_id, who press the button
-                String userId = device.getUserId();
-                System.out.println("PlayerID:"+ userId);
-
-                //prepei na stelnw notification sto player_id pou pataei to koumpi
-                //thelei parametro to player_id (NA GINEI)
-                try {
-                    Rabbit_Message.sendMessage();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                if(userId!=null) EsperTemperature.whenButtonClicked(userId);
-                else System.out.println("Null UserId. Can't send notification");
-            }
-        });*/
     }
 
 
@@ -188,10 +180,12 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
         boolean checked1 = PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean("temp", false);
         temp.setChecked(checked1);
+        //temper = checked1;
 
         boolean checked2 = PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean("hum", false);
         hum.setChecked(checked2);
+       // humid = checked2;
 
         //if(checked1==true) temp.setChecked(true);
         //else temp.setChecked(false);
@@ -220,14 +214,13 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
         //ActiveActivitiesTracker.activityStopped();
     }
 
-    //SharedPreferences prefs = this.getSharedPreferences("com.example.myapp", Context.MODE_PRIVATE);
-
     public void onClick(View view) {
         //Intent intent = new Intent(Intent.ACTION_DIAL);
         OSDeviceState device = OneSignal.getDeviceState();
 
         //get player_id, who press the button
         String userId = device.getUserId();
+        player = userId;
 
         OurText = findViewById(R.id.textView);
         // Is the view now checked?
@@ -239,9 +232,10 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
 
         //OurText = findViewById(R.id.textView);
 
-        int k=0, l=0;
+        int k=0, l=0;  //k for temps, l for hums
         if(temp.isChecked()){
-            temp.setChecked(true);
+            temper = true;
+            //temp.setChecked(true);
             if (playerstemp.contains(userId)) k=1;
             if(k==0) {
                 playerstemp.add(userId);
@@ -252,6 +246,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
         }
         else {
             // Remove the meat
+            temper = false;
             if (playerstemp.contains(userId)) k=1;
             else k=0;
             if(k==1) {
@@ -261,6 +256,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
             }
         }
         if(hum.isChecked()){
+            humid = true;
             if (playershum.contains(userId)) l=1;
             if(l==0) {
                 playershum.add(userId);
@@ -271,6 +267,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
         }
         else {
             // I'm lactose intolerant
+            humid = false;
             if (playershum.contains(userId)) l=1;
             else l=0;
             if(l==1) {
@@ -280,16 +277,6 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
             }
         }
         OurText.setText("You subscribed successfully. You can leave the app now.");
-        /*try {
-            Rabbit_Message.receiveMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            Rabbit_Message.sendMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
         timer.schedule(task, DELAY, DELAY);
         //timer.cancel();
 
@@ -301,15 +288,6 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
         //startActivity(intent);
     }
 
-   /* public void onClickButton2(View view) {
-        OSDeviceState device = OneSignal.getDeviceState();
-
-        //get player_id, who press the button
-        String userId = device.getUserId();
-
-        if(userId!=null) EsperTemperature.whenButtonClicked(userId, 2);
-        else System.out.println("Null UserId. Can't send notification");
-    }*/
     /*epistrefei tous paiktes pou ekanan subscribe sto temperature*/
     public static ArrayList<String> getPlayersTemp() {
         return playerstemp;

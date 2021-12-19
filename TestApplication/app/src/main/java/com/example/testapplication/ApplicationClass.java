@@ -76,9 +76,6 @@ public class ApplicationClass extends Application {
         OneSignal.initWithContext(this);
         OneSignal.setAppId(ONESIGNAL_APP_ID);
 
-        //SendNotification.sendDeviceNotification();
-
-
         //linking notification to URL
         OneSignal.setNotificationOpenedHandler(
                 result -> {
@@ -131,16 +128,7 @@ public class ApplicationClass extends Application {
 
         Log.d("Debug", "ONESIGNAL_SDK_INIT");
         //System.out.println("EKEIEIIEIE\n");
-        //SendNotification.sendDeviceNotification();
-        //EsperTemperature.checkTemperatureEvents();
-        List<Integer> temps = new ArrayList<>();   /*arraylist with the temperatures*/
 
-       /* int i;
-        for(i=0; i<100; i++) {
-            int j = generator.nextInt(100);
-            temps.add(j);
-        }
-        EsperTemperature.checkTemperatureEvents((ArrayList<Integer>) temps);*/
         try {
             Rabbit_Message.receiveMessage();
         } catch (Exception e) {
@@ -150,61 +138,30 @@ public class ApplicationClass extends Application {
             Rabbit_Message.sendMessage();
         } catch (Exception e) {
             e.printStackTrace();
-        }   //edwwww
+        }
+
+
+        final Handler handle = new Handler();
+        final int delay = 60000; // 1000 milliseconds == 1 second
+
+        handle.postDelayed(new Runnable() {
+            public void run() {
+                System.out.println("myHandler: here!");
+                try {
+                    Rabbit_Message.receiveMessage();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                try {
+                    Rabbit_Message.sendMessage();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                handle.postDelayed(this, delay);
+            }
+        }, delay);
 
         //abcCaller();
-       // while(true) {
-           //this.timer.cancel(); //this will cancel the current task. if there is no active task, nothing happens
-          /*  this.timer = new Timer();
-
-
-        TimerTask action = new TimerTask() {
-                public void run() {
-                    System.out.println("mphka re");
-                    EsperTemperature.sendNotificationbyEsper(); //as you said in the comments: abc is a static method
-                    firecount++;
-
-                    if ( firecount == 5 )
-                        timer.cancel();
-                }
-
-            };
-
-        int i;
-        for(i=0; i<3; i++) {
-            this.timer.schedule(action, 60000); //this starts the task
-            this.timer.cancel();
-            //this.timer.purge();
-        }*/
-
-       /* new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        EsperTemperature.sendNotificationbyEsper();
-                        // your code here
-                    }
-                },
-                40000
-        );*/
-
-        //this.timer.schedule(action, 60000); //this starts the task
-        //}
-
-
-
-        //if(checking==false) {
-            /*try {
-                Rabbit_Message.receiveMessage();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            try {
-                Rabbit_Message.sendMessage();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }*/
 
 
     }

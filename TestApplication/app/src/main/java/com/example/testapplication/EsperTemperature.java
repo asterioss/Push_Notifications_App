@@ -23,12 +23,6 @@ public class EsperTemperature {
     private static String date_now;
     public static boolean check_hum;
     public static boolean check_temp;
-    //private static boolean ckeck_temp;
-    //static int ckeck_temp=0;
-    //static int ckeck_hum=0;
-    //private static boolean check_hum;
-    //static int check_temp;
-    //static int check_hum;
 
     public static class Temperature {
         Integer price;
@@ -89,9 +83,14 @@ public class EsperTemperature {
     public static boolean get_check2() {
         return check_hum;
     }
+
+    /*epistrefei tis times pou epiase to esper san events*/
+    public static int get_Temperature() {return temperature;}
+    public static int get_Humidity() {return humidity;}
+    //epistrefei to date
+    public static String get_Date() {return date_now;}
     
     public static class CEPListener implements UpdateListener {
-
         //static boolean ckeck_tempr=check_temp;
         //static boolean ckeck_humi=check_hum;
         public void update(EventBean[] newData, EventBean[] oldData) {
@@ -103,10 +102,8 @@ public class EsperTemperature {
             System.out.println("des auto temp: "+get_check1());
             System.out.println("des auto hum: "+get_check2());
             //System.out.println("Temperature=" + event.get("price"));
-            //int i;
-            //thermokrasia
 
-            //boolean ckeck_temp=check_temp;
+            //thermokrasia
             if(get_check1()==true) {
                 System.out.println("piasame temperature");
                 int temp = (int) newData[0].get("price");
@@ -131,6 +128,7 @@ public class EsperTemperature {
         }
     }
 
+    //den xrhsimopoieitai pleon - NOT USED
     //when button is clicked, then send notification to this user who press the button
     public static void sendNotificationbyEsper() { //String playerId, int i
         ArrayList<String> playerstemp = MainActivity.getPlayersTemp();
@@ -150,9 +148,6 @@ public class EsperTemperature {
             }
         }
 
-        /*if(i==1) SendNotification.sendTempetatureNotification(playerId, temperature);
-        else if(i==2) SendNotification.sendHumidityNotification(playerId, humidity);
-        else System.out.println("Error");*/
     }
 
     public static void checkTemperatureEvents(ArrayList<Integer> temperatures) {
@@ -168,7 +163,9 @@ public class EsperTemperature {
             Configuration config = new Configuration();
             EPServiceProvider cep = EPServiceProviderManager.getDefaultProvider(config);
             //cep.initialize();
+
             /*for Temperatures*/
+            // We register Temps as objects the engine will have to handle
             cep.getEPAdministrator().getConfiguration().addEventType("TemperatureEvent", Temperature.class);
             EPRuntime cepRT = cep.getEPRuntime();
 
@@ -189,6 +186,9 @@ public class EsperTemperature {
             /*for (int i = 0; i < 10; i++) {
                 GenerateRandomTick(cepRT);
             }*/
+
+            /*For humidities*/
+            // We register Temps as objects the engine will have to handle
             cep.getEPAdministrator().getConfiguration().addEventType("HumidityEvent", Humidity.class);
             EPRuntime cepRT2 = cep.getEPRuntime();
 
