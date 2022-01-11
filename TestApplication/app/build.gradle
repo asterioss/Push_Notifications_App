@@ -90,6 +90,7 @@ dependencies {
     //implementation 'com.google.android.gms:play-services-location:[17.0.0, 17.99.99]'
     implementation 'com.onesignal:OneSignal:[4.0.0, 4.99.99]'
     implementation 'com.google.firebase:firebase-messaging:22.0.0'
+    //implementation "com.google.firebase:firebase-iid"
 }
 
 apply plugin: 'com.google.gms.google-services'
