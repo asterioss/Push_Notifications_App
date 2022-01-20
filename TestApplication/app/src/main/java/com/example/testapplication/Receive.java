@@ -6,14 +6,13 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
-import com.rabbitmq.client.MessageProperties;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/*example class for receiving a message*/
 public class Receive {
     private final static String QUEUE_NAME = "hello";
     private static final String TASK_QUEUE_NAME = "task_queue";
@@ -51,30 +50,12 @@ public class Receive {
                 temps.add(mes);
                 j.getAndIncrement();
                 if(j.get()==100) {
-                    EsperTemperature.checkTemperatureEvents((ArrayList<Integer>) temps);
+                    //EsperTemperature.checkTemperatureEvents((ArrayList<Integer>) temps);
                     /*channel.close();
                     connection.close();*/
-
                 }
             }
-
-
-
-            /*try {
-                doWork(message);
-            } finally {
-                System.out.println(" [x] Done");
-                channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
-                int mes=Integer.parseInt(message);
-                //System.out.println("String to Integer="+mes);
-                temps.add(mes);
-            }*/
         };
-        //channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -> { });
-        //channel.close();
-        // connection.close();
-        //channel.close();
-        //connection.close();
         channel.basicConsume(TASK_QUEUE_NAME, false, deliverCallback, consumerTag -> { });
         //if(temps.size()!=0)
         //EsperTemperature.checkTemperatureEvents((ArrayList<Integer>) temps);

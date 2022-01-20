@@ -1,27 +1,20 @@
 package com.example.testapplication;
 
-
-import android.app.Notification;
-import android.content.Intent;
-import android.nfc.Tag;
 import android.os.StrictMode;
-import android.util.Log;
-
-import com.onesignal.OSNotificationOpenedResult;
-import com.onesignal.OneSignal;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
 
+/**
+ * The sendNotification class, which sends the notification to user's mobile phone.
+ *
+ */
 public class SendNotification {
 
     public static void sendTempetatureNotification(String player_id, int temperature, String date) {
-        //post a notification
+        //send a temperature notification
         try {
             String jsonResponse;
 
@@ -60,7 +53,7 @@ public class SendNotification {
             int httpResponse = con.getResponseCode();
             System.out.println("httpResponse: " + httpResponse);
 
-            if (  httpResponse >= HttpURLConnection.HTTP_OK
+            if (httpResponse >= HttpURLConnection.HTTP_OK
                     && httpResponse < HttpURLConnection.HTTP_BAD_REQUEST) {
                 Scanner scanner = new Scanner(con.getInputStream(), "UTF-8");
                 jsonResponse = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
@@ -79,7 +72,7 @@ public class SendNotification {
     }
 
     public static void sendHumidityNotification(String player_id, int humidity, String date) {
-        //post a notification
+        //send a humidity notification
         try {
             String jsonResponse;
 
@@ -118,7 +111,7 @@ public class SendNotification {
             int httpResponse = con.getResponseCode();
             System.out.println("httpResponse: " + httpResponse);
 
-            if (  httpResponse >= HttpURLConnection.HTTP_OK
+            if (httpResponse >= HttpURLConnection.HTTP_OK
                     && httpResponse < HttpURLConnection.HTTP_BAD_REQUEST) {
                 Scanner scanner = new Scanner(con.getInputStream(), "UTF-8");
                 jsonResponse = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
@@ -135,6 +128,5 @@ public class SendNotification {
             t.printStackTrace();
         }
     }
-
 
 }

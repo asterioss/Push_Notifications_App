@@ -9,17 +9,21 @@ import com.rabbitmq.client.DeliverCallback;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * The second rabbitmq class, which is called when user click the button and it calls the sendNotification class.
+ *
+ */
 public class Rabbit_SendEvents {
-
     private static final String EXCHANGE_NAME = "logs";
 
     public static void SendEvents(String player, int temp, int hum, String date) throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
-        // set the heartbeat timeout to 60 seconds
+        //set the heartbeat timeout to 60 seconds
         factory.setRequestedHeartbeat(60);
         factory.setUsername("test");
         factory.setPassword("test");
-        factory.setHost("192.168.1.11");
+        factory.setHost("192.168.1.8");
+
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
@@ -28,13 +32,14 @@ public class Rabbit_SendEvents {
             channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
 
             String message = null;
+            /*o user den exei kanei check tipota, ara den stelnei notification*/
             if(temp==0 && hum==0) System.out.println("No Notifications");
+            /*o user exei kanei check kai ta 2*/
             else if(temp!=0 && hum!=0) {
                 int i;
                 for(i=0; i<2; i++) {
                     if(i==0) {
                         message = "" +temp;
-                        //SendNotification.sendTempetatureNotification(temp_player, temp, date_now);
                     }
                     if(i==1) {
                         message = "" +hum;
@@ -46,6 +51,7 @@ public class Rabbit_SendEvents {
                 SendNotification.sendTempetatureNotification(player, temp, date);
                 SendNotification.sendHumidityNotification(player, hum, date);
             }
+            /*o user exei kanei check se ena apo ta 2*/
             else {
                 if(temp!=0) {
                     message = "" +temp;
@@ -63,16 +69,15 @@ public class Rabbit_SendEvents {
             //connection.close();
 
         }
-        //System.out.println("skata");
     }
 
     public static void ReceiveEvents(String player, int temp, int hum, String date) throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
-        // set the heartbeat timeout to 60 seconds
-        //factory.setRequestedHeartbeat(60);
+        //set the heartbeat timeout to 60 seconds
+        factory.setRequestedHeartbeat(60);
         factory.setUsername("test");
         factory.setPassword("test");
-        factory.setHost("192.168.1.11");
+        factory.setHost("192.168.1.8");
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         Connection connection = factory.newConnection();
@@ -90,12 +95,10 @@ public class Rabbit_SendEvents {
             if(temp==0 && hum==0) System.out.println("No Notifications");
             else if(temp!=0 && hum!=0) {
                 System.out.println("First Receive.");
-                //if(message.equals(""))
 
                 if(i.get() == 1) SendNotification.sendTempetatureNotification(player, temp, date);
                 if(i.get() == 2) {
                     SendNotification.sendHumidityNotification(player, hum, date);
-                    //i=0;
                     i.set(0);
                 }
                 System.out.println("i=" +i);

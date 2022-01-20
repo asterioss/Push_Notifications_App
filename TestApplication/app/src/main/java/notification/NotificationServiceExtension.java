@@ -1,6 +1,5 @@
 package notification;
 
-import android.app.Application;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.Spannable;
@@ -14,9 +13,8 @@ import com.onesignal.OSMutableNotification;
 import com.onesignal.OSNotificationReceivedEvent;
 import com.onesignal.OneSignal.OSRemoteNotificationReceivedHandler;
 
-import java.math.BigInteger;
-
 @SuppressWarnings("unused")
+/*This service class is used for changing the notifications*/
 public class NotificationServiceExtension implements OSRemoteNotificationReceivedHandler {
 
     /*public NotificationServiceExtension() {
@@ -27,20 +25,23 @@ public class NotificationServiceExtension implements OSRemoteNotificationReceive
     public void remoteNotificationReceived(Context context, OSNotificationReceivedEvent notificationReceivedEvent) {
         OSNotification notification = notificationReceivedEvent.getNotification();
 
-        // Example of modifying the notification's accent color
+        //Example of modifying the notification's accent color
         OSMutableNotification mutableNotification = notification.mutableCopy();
         mutableNotification.setExtender(builder -> {
-            // Sets the accent color to Green on Android 5+ devices.
-            // Accent color controls icon and action buttons on Android 5+. Accent color does not change app title on Android 10+
+            //Sets the accent color to Green on Android 5+ devices.
+            //Accent color controls icon and action buttons on Android 5+. Accent color does not change app title on Android 10+
             //builder.setColor(new BigInteger("FF00FF00", 16).intValue());
-            // Sets the notification Title to Red
+
+            //Sets the notification Title to Dark Gray
             Spannable spannableTitle = new SpannableString(notification.getTitle());
             spannableTitle.setSpan(new ForegroundColorSpan(Color.DKGRAY),0,notification.getTitle().length(),0);
             builder.setContentTitle(spannableTitle);
-            // Sets the notification Body to Blue
+
+            //Sets the notification Body to Blue
             Spannable spannableBody = new SpannableString(notification.getBody());
             spannableBody.setSpan(new ForegroundColorSpan(Color.BLUE),0,notification.getBody().length(),0);
             builder.setContentText(spannableBody);
+
             //Force remove push from Notification Center after 30 seconds
             builder.setTimeoutAfter(30000);
             return builder;
@@ -49,8 +50,8 @@ public class NotificationServiceExtension implements OSRemoteNotificationReceive
         Log.i("OneSignalExample", "Received Notification Data: " + data);
         System.out.println("Notification-Service");
 
-        // If complete isn't call within a time period of 25 seconds, OneSignal internal logic will show the original notification
-        // To omit displaying a notification, pass `null` to complete()
+        //If complete isn't call within a time period of 25 seconds, OneSignal internal logic will show the original notification
+        //To omit displaying a notification, pass `null` to complete()
         notificationReceivedEvent.complete(mutableNotification);
     }
 }

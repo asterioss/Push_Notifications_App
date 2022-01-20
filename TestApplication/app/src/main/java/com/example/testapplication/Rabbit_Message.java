@@ -13,9 +13,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * The first rabbitmq class, which sends the messages that generate to esper service.
+ *
+ */
 public class Rabbit_Message  {
     private final static String QUEUE_NAME = "hello";
     private static final String TASK_QUEUE_NAME = "task_queue";
@@ -23,21 +26,22 @@ public class Rabbit_Message  {
     private static Random generator=new Random();
 
     public static void sendMessage() throws Exception {
+        /*connect with rabbitmq*/
         ConnectionFactory factory = new ConnectionFactory();
         factory.setUsername("test");
         factory.setPassword("test");
-        factory.setHost("192.168.1.11");
+        factory.setHost("192.168.1.8");
+
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-         /*Connection connection;
-        Channel channel;*/
+
         try (Connection connection = factory.newConnection();
              Channel channel = connection.createChannel()) {
             channel.queueDeclare(TASK_QUEUE_NAME, true, false, false, null);
             //channel.queueDeclare(QUEUE_NAME, false, false, false, null);
 
-            //String message = String.join(" ", argv);
             int i;
+            /*we generate 100 random values*/
             for(i=0; i<100; i++) {
                 int j = generator.nextInt(100);
                 String message = "" + j;
@@ -51,21 +55,21 @@ public class Rabbit_Message  {
             }
             /*channel.close();
             connection.close();*/
-
         }
     }
 
     public static void receiveMessage() throws Exception {
         List<Integer> temps = new ArrayList<>();   /*arraylist with the temperatures*/
+        List<Integer> hums = new ArrayList<>();   /*arraylist with the humidities*/
         ConnectionFactory factory = new ConnectionFactory();
         factory.setUsername("test");
         factory.setPassword("test");
-        factory.setHost("192.168.1.11");
+        factory.setHost("192.168.1.8");
+
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        //final
+
         final Connection connection = factory.newConnection();
-        //final
         final Channel channel = connection.createChannel();
 
         //channel.queueDeclare(QUEUE_NAME, false, false, false, null);
@@ -75,9 +79,10 @@ public class Rabbit_Message  {
         channel.basicQos(1);
 
         AtomicInteger j = new AtomicInteger(1);
+        /*We receive the values*/
         DeliverCallback deliverCallback = (consumerTag, delivery) -> {
             if(temps.size()<=99) {
-                System.out.println("Size: "+ temps.size());
+                //System.out.println("Size: "+ temps.size());
                 String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
                 System.out.println(" [x] Received '" + message + "'");
 
@@ -86,35 +91,19 @@ public class Rabbit_Message  {
                 } finally {
                     System.out.println(" [x] Done");
                     channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
-                    int mes = Integer.parseInt(message);
-                    temps.add(mes);
+                    int mes = Integer.parseInt(message);    //convert message to integer
+                    hums.add(mes);    //put the message to the humidities arraylist
+                    temps.add(mes);   //put the message to the temperatues arraylist
                     j.getAndIncrement();
 
                     if (j.get() == 100) {
-                        EsperTemperature.checkTemperatureEvents((ArrayList<Integer>) temps);
-                        //System.out.println("Size: "+ temps.size());
-                    /*try {
-                        channel.close();
-                    } catch (TimeoutException e) {
-                        e.printStackTrace();
-                    }*/
-                        /*connection.close();*/
+                        /*molis vrei 100 times, kaloume to esper me parametrous tis listes me tous arithmous*/
+                        EsperTemperature.checkTheEvents((ArrayList<Integer>) temps, (ArrayList<Integer>) hums);
 
+                        /*connection.close();*/
                     }
                 }
             }
-
-
-
-            /*try {
-                doWork(message);
-            } finally {
-                System.out.println(" [x] Done");
-                channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
-                int mes=Integer.parseInt(message);
-                //System.out.println("String to Integer="+mes);
-                temps.add(mes);
-            }*/
         };
 
         //channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -> { });

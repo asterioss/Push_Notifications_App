@@ -45,52 +45,26 @@ android {
 }
 
 dependencies {
-    //implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.6'
-    //implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.6'
-    /*For Esper CEP*/
-    // https://mvnrepository.com/artifact/com.espertech/esper
-    //implementation group: 'com.espertech', name: 'esper-common', version: '8.3.0'
-    
-    //implementation group: 'com.espertech', name: 'esper', version: '7.1.0'
-    // https://mvnrepository.com/artifact/org.antlr/antlr-runtime
-    //implementation group: 'org.antlr', name: 'antlr-runtime', version: '3.5.2'
-    // https://mvnrepository.com/artifact/cglib/cglib-nodep
-    //eiimplementation group: 'cglib', name: 'cglib-nodep', version: '3.2.5'
-    // https://mvnrepository.com/artifact/org.slf4j/slf4j-android
-    //implementation group: 'org.slf4j', name: 'slf4j-android', version: '1.7.25'
-    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-    //implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
-    //implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
-    // https://mvnrepository.com/artifact/org.codehaus.janino/janino
-    //implementation group: 'org.codehaus.janino', name: 'janino', version: '3.0.7'
-    // https://mvnrepository.com/artifact/org.codehaus.janino/commons-compiler
-    //implementation group: 'org.codehaus.janino', name: 'commons-compiler', version: '3.0.7'
-    // https://mvnrepository.com/artifact/commons-io/commons-io
     implementation group: 'commons-io', name: 'commons-io', version: '2.4'
-    // https://mvnrepository.com/artifact/commons-cli/commons-cli
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
 
     /*For Android*/
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.3.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    //implementation files('C:/Users/steli/OneDrive/projects/Push_Notifications_Project/TestApplication/app/libs/asper-4.9.0')
-    //implementation files('C:/Users/steli/OneDrive/projects/Push_Notifications_Project/TestApplication/app/libs/esper_android_0_1')
+
+    /*For Esper CEP*/
     implementation fileTree(dir: 'C:/Users/steli/OneDrive/projects/Push_Notifications_Project/TestApplication/app/libs', include: ['asper-4.9.0.jar'])
     implementation fileTree(dir: 'C:/Users/steli/OneDrive/projects/Push_Notifications_Project/TestApplication/app/libs', include: ['amqp-client-5.7.1.jar'])
-    //implementation fileTree(dir: 'C:/Users/steli/OneDrive/projects/Push_Notifications_Project/TestApplication/app/libs', include: ['esper_android_0_1.jar'])
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    //OneSignal SDK
-    //compile 'com.onesignal:OneSignal:[4.0.0, 4.99.99]'
-    //implementation 'com.onesignal:OneSignal:4.6.0.+@aar'
+
+    //OneSignal SDK - Firebase
     implementation 'com.google.android.gms:play-services-gcm:10.2.1'
-    //compile 'com.firebase:firebase-client-android:2.5.2+'
-    //implementation 'com.google.android.gms:play-services-location:[17.0.0, 17.99.99]'
     implementation 'com.onesignal:OneSignal:[4.0.0, 4.99.99]'
     implementation 'com.google.firebase:firebase-messaging:22.0.0'
-    //implementation "com.google.firebase:firebase-iid"
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -2,11 +2,9 @@ package com.example.testapplication;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Random;
 
 import com.espertech.esper.client.Configuration;
 import com.espertech.esper.client.EPRuntime;
-//import com.espertech.esper.client.*;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPServiceProviderManager;
 import com.espertech.esper.client.EPStatement;
@@ -14,15 +12,16 @@ import com.espertech.esper.client.EventBean;
 import com.espertech.esper.client.UpdateListener;
 
 /**
- * Hello world!
+ * The esper service class, which receives the messages from rabbitmq and it catches the specific events.
  *
  */
 public class EsperTemperature {
     private static int temperature;
     private static int humidity;
     private static String date_now;
-    public static boolean check_hum;
-    public static boolean check_temp;
+
+    public static boolean check_hum;    //it's true when we catch an event in humidities
+    public static boolean check_temp;  //it's true when we catch an event in temperatures
 
     public static class Temperature {
         Integer price;
@@ -32,8 +31,8 @@ public class EsperTemperature {
             price = p;
             timeStamp = new Date(t);
         }
-        public Integer getPrice() {return price;}
-        public Date getTimeStamp() {return timeStamp;}
+        public Integer getPrice() { return price; }
+        public Date getTimeStamp() { return timeStamp; }
 
         @Override
         public String toString() {
@@ -48,8 +47,8 @@ public class EsperTemperature {
             price = p;
             timeStamp = new Date(t);
         }
-        public Integer getPrice() {return price;}
-        public Date getTimeStamp() {return timeStamp;}
+        public Integer getPrice() { return price; }
+        public Date getTimeStamp() { return timeStamp; }
 
         @Override
         public String toString() {
@@ -57,72 +56,58 @@ public class EsperTemperature {
         }
     }
 
-    private static Random generator=new Random();
-
     public static void sendTemperature(EPRuntime cepRT, int temp_price){
-        //double price = (double) generator.nextInt(60);
         int price = temp_price;
         long timeStamp = System.currentTimeMillis();
-        Temperature tick= new Temperature(price,timeStamp);
+        Temperature tick = new Temperature(price,timeStamp);
         System.out.println("Sending temperature: " + tick);
         check_temp=true;
         cepRT.sendEvent(tick);
     }
+
     public static void sendHumidity(EPRuntime cepRT, int temp_price){
-        //double price = (double) generator.nextInt(60);
         int price = temp_price;
         long timeStamp = System.currentTimeMillis();
-        Humidity tick= new Humidity(price,timeStamp);
+        Humidity tick = new Humidity(price,timeStamp);
         System.out.println("Sending humidity: " + tick);
         check_hum=true;
         cepRT.sendEvent(tick);
     }
-    public static boolean get_check1() {
+
+    public static boolean get_checkTemp() {
         return check_temp;
     }
-    public static boolean get_check2() {
+    public static boolean get_checkHum() {
         return check_hum;
     }
 
-    /*epistrefei tis times pou epiase to esper san events*/
-    public static int get_Temperature() {return temperature;}
-    public static int get_Humidity() {return humidity;}
+    /*epistrefei tis telikes times pou epiase to esper san events*/
+    public static int get_Temperature() { return temperature; }
+    public static int get_Humidity() { return humidity; }
     //epistrefei to date
-    public static String get_Date() {return date_now;}
+    public static String get_Date() { return date_now; }
     
     public static class CEPListener implements UpdateListener {
-        //static boolean ckeck_tempr=check_temp;
-        //static boolean ckeck_humi=check_hum;
         public void update(EventBean[] newData, EventBean[] oldData) {
-            //Double temperature = (double) newData[0].get("price");
-            //System.out.println(String.format("Name: %s, Age: %d", name, age));
             System.out.println("Event received: "
                     + newData[0].getUnderlying());
-            //EventBean event = newData[0];
-            System.out.println("des auto temp: "+get_check1());
-            System.out.println("des auto hum: "+get_check2());
-            //System.out.println("Temperature=" + event.get("price"));
+            //System.out.println("des auto temp: "+get_checkTemp());
+            //System.out.println("des auto hum: "+get_checkHum());
 
             //thermokrasia
-            if(get_check1()==true) {
+            if(get_checkTemp()==true) {
                 System.out.println("piasame temperature");
                 int temp = (int) newData[0].get("price");
                 if(temp>=40 && temp<60) temperature = temp;
                 date_now = newData[0].get("timeStamp").toString();
-
-                //SendNotification.sendDeviceNotification(temp);  //temperature as parameter
-                //ckeck_temp++;
                 check_temp=false;
             }
             //ygrasia
-            //boolean ckeck_hum=check_hum;
-            if(get_check2()==true) {
+            if(get_checkHum()==true) {
                 System.out.println("piasame humidity");
                 int hum = (int) newData[0].get("price");
                 date_now = newData[0].get("timeStamp").toString();
                 humidity = hum;
-                //SendNotification.sendDeviceNotification(temp);  //temperature as parameter
-                //ckeck_hum++;
                 check_hum=false;
             }
         }
@@ -147,71 +132,54 @@ public class EsperTemperature {
                 SendNotification.sendHumidityNotification(temp_player, humidity, date_now);
             }
         }
-
     }
 
-    public static void checkTemperatureEvents(ArrayList<Integer> temperatures) {
-        //System.out.println("Skata sta moutra");
-        //The Configuration is meant only as an initialization-time object.
-        //Configuration cepConfig = new Configuration();
-        // We register Ticks as objects the engine will have to handle
-        //ei- cepConfig.addEventType("TemperatureEvent",Temperature.class.getName());
-        // EPServiceProvider epServiceProvider = EPServiceProviderManager.getDefaultProvider();
-        // epServiceProvider.getEPAdministrator().getConfiguration().addEventType("StartEvent", Tick.class);
+    public static void checkTheEvents(ArrayList<Integer> temperatures, ArrayList<Integer> humidities) {
+        //We receive the temperatures and humidities from rabbitmq and we catch the events that we we want
         try {
-            // We setup the engine
+            //We setup the engine. The Configuration is meant only as an initialization-time object.
             Configuration config = new Configuration();
             EPServiceProvider cep = EPServiceProviderManager.getDefaultProvider(config);
             //cep.initialize();
 
             /*for Temperatures*/
-            // We register Temps as objects the engine will have to handle
+            //We register Temps as objects the engine will have to handle
             cep.getEPAdministrator().getConfiguration().addEventType("TemperatureEvent", Temperature.class);
             EPRuntime cepRT = cep.getEPRuntime();
 
-            // We register an EPL statement (Query)
-            //EPAdministrator cepAdm = cep.getEPAdministrator();
+            //We register an EPL statement (Query)
             EPStatement cepStatement = cep.getEPAdministrator().createEPL("select * from TemperatureEvent " +
                     "where price between 40 and 60");
 
             //Attach a listener to the statement
             cepStatement.addListener(new CEPListener());
 
-            //Generate random values
+            //We send the values (temperatures) from temperatures arraylist
             for(int temp : temperatures) {
-                //System.out.print("Temperatureeeeee: "+temp + ", ");
                 sendTemperature(cepRT, temp);
-
             }
-            /*for (int i = 0; i < 10; i++) {
-                GenerateRandomTick(cepRT);
-            }*/
 
             /*For humidities*/
-            // We register Temps as objects the engine will have to handle
+            //We register Temps as objects the engine will have to handle
             cep.getEPAdministrator().getConfiguration().addEventType("HumidityEvent", Humidity.class);
             EPRuntime cepRT2 = cep.getEPRuntime();
 
-            // We register an EPL statement (Query)
-            //EPAdministrator cepAdm = cep.getEPAdministrator();
+            //We register an EPL statement (Query)
             EPStatement cepStatement2 = cep.getEPAdministrator().createEPL("select * from HumidityEvent " +
                     "where price > 80");
 
             //Attach a listener to the statement
             cepStatement2.addListener(new CEPListener());
 
-            //Generate random values
-            for(int temp : temperatures) {
-                //System.out.print("Temperatureeeeee: "+temp + ", ");
-                sendHumidity(cepRT2, temp);
-
+            //We send the values (humidities) from humidities arraylist
+            for(int hum : humidities) {
+                sendHumidity(cepRT2, hum);
             }
 
             //cep.destroy();
-        }catch(Exception e){
+        } catch(Exception e){
             e.printStackTrace();
         }
     }
-
 
 }
