@@ -54,8 +54,8 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
     /*For Esper CEP*/
-    implementation fileTree(dir: 'C:/Users/steli/OneDrive/projects/Push_Notifications_Project/TestApplication/app/libs', include: ['asper-4.9.0.jar'])
-    implementation fileTree(dir: 'C:/Users/steli/OneDrive/projects/Push_Notifications_Project/TestApplication/app/libs', include: ['amqp-client-5.7.1.jar'])
+    implementation fileTree(dir: 'libs', include: ['asper-4.9.0.jar'])
+    implementation fileTree(dir: 'libs', include: ['amqp-client-5.7.1.jar'])
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

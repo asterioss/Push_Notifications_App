@@ -28,7 +28,7 @@ public class ApplicationClass extends Application {
         super.onCreate();
 
         OSInAppMessageLifecycleHandler handler = new OSInAppMessageLifecycleHandler() {
-            //for onesignal nitialization
+            //for onesignal implementation
             @Override
             public void onWillDisplayInAppMessage(OSInAppMessage message) {
                 OneSignal.onesignalLog(OneSignal.LOG_LEVEL.VERBOSE, "MainApplication onWillDisplayInAppMessage");
