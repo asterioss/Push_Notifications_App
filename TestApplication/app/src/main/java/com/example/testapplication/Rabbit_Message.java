@@ -30,7 +30,9 @@ public class Rabbit_Message  {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setUsername("test");
         factory.setPassword("test");
+        factory.setVirtualHost("/");
         factory.setHost("192.168.1.8");
+        //192.168.1.8
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -64,7 +66,9 @@ public class Rabbit_Message  {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setUsername("test");
         factory.setPassword("test");
+        factory.setVirtualHost("/");
         factory.setHost("192.168.1.8");
+        //192.168.1.8
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);

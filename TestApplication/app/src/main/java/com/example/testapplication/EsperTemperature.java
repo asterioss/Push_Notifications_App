@@ -116,8 +116,8 @@ public class EsperTemperature {
     //den xrhsimopoieitai pleon - NOT USED
     //when button is clicked, then send notification to this user who press the button
     public static void sendNotificationbyEsper() { //String playerId, int i
-        ArrayList<String> playerstemp = MainActivity.getPlayersTemp();
-        ArrayList<String> playershum = MainActivity.getPlayersHum();
+        ArrayList<String> playerstemp = MainActivity.getPlayersTV();
+        ArrayList<String> playershum = MainActivity.getPlayersLaptop();
         if(playerstemp.size()!=0) {
             for(String temp_player : playerstemp) {
                 //System.out.print(temp_player);

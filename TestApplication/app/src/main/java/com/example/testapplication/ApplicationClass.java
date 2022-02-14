@@ -75,13 +75,14 @@ public class ApplicationClass extends Application {
                     }
                 });
 
-        OneSignal.setNotificationWillShowInForegroundHandler(notificationReceivedEvent -> {
+        //(NOT USED) -- this can hide the notification and send it when we want
+        /*OneSignal.setNotificationWillShowInForegroundHandler(notificationReceivedEvent -> {
             OneSignal.onesignalLog(OneSignal.LOG_LEVEL.VERBOSE, "NotificationWillShowInForegroundHandler fired!" +
                     " with notification event: " + notificationReceivedEvent.toString());
 
             OSNotification notification = notificationReceivedEvent.getNotification();
             notificationReceivedEvent.complete(notification);
-        });
+        });*/
 
         //OneSignal.inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification);
         OneSignal.unsubscribeWhenNotificationsAreDisabled(true);
@@ -123,11 +124,11 @@ public class ApplicationClass extends Application {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                try {
+                /*try {
                     Rabbit_Message.sendMessage();
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
+                }*/
                 handle.postDelayed(this, delay);
             }
         }, delay);

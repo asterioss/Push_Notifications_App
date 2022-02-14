@@ -25,7 +25,7 @@ public class SendNotification {
             con.setDoInput(true);
 
             con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            con.setRequestProperty("Authorization", "Basic YWU5ODI4YzUtNTU0Ni00M2ZiLWFjY2ItZWI3NWE4ZjUyNDll");
+            con.setRequestProperty("Authorization", "Basic MTE3ZDI2YTMtMTRiYi00Nzg1LTkwNDAtZmY5MjdkYzJlMTA2");
             con.setRequestMethod("POST");
             String strJsonBody = "{"
                     +   "\"app_id\": \"1e9efea7-8568-4adb-acff-42527a5855bf\","
@@ -83,7 +83,7 @@ public class SendNotification {
             con.setDoInput(true);
 
             con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            con.setRequestProperty("Authorization", "Basic YWU5ODI4YzUtNTU0Ni00M2ZiLWFjY2ItZWI3NWE4ZjUyNDll");
+            con.setRequestProperty("Authorization", "Basic MTE3ZDI2YTMtMTRiYi00Nzg1LTkwNDAtZmY5MjdkYzJlMTA2");
             con.setRequestMethod("POST");
             String strJsonBody = "{"
                     +   "\"app_id\": \"1e9efea7-8568-4adb-acff-42527a5855bf\","

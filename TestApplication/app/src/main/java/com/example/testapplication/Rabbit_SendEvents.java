@@ -22,6 +22,7 @@ public class Rabbit_SendEvents {
         factory.setRequestedHeartbeat(60);
         factory.setUsername("test");
         factory.setPassword("test");
+        factory.setVirtualHost("/");
         factory.setHost("192.168.1.8");
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -77,7 +78,9 @@ public class Rabbit_SendEvents {
         factory.setRequestedHeartbeat(60);
         factory.setUsername("test");
         factory.setPassword("test");
+        factory.setVirtualHost("/");
         factory.setHost("192.168.1.8");
+
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         Connection connection = factory.newConnection();
