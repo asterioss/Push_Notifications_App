@@ -98,19 +98,27 @@ public class ApplicationClass extends Application {
 
         Log.d("Debug", "ONESIGNAL_SDK_INIT");
 
-        //call rabbitmq to receive the messages
-        try {
-            Rabbit_Message.receiveMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
+        //call rabbitmq to receive the messages (client_id, product_id, productcategory_id)
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        try {
+                            Rabbit_Message.receiveMessage();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                13000
+        );
+        /*try {
             Rabbit_Message.sendMessage();
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
-        final Handler handle = new Handler();
+       /* final Handler handle = new Handler();
         final int delay = 60000; // 1000 milliseconds == 1 second
 
         //get new messages every minute with this handler
@@ -120,7 +128,7 @@ public class ApplicationClass extends Application {
                 System.out.println("Receiving new messages!");
 
                 try {
-                    Rabbit_Message.receiveMessage();
+                    Rabbit_Message.run();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -128,10 +136,10 @@ public class ApplicationClass extends Application {
                     Rabbit_Message.sendMessage();
                 } catch (Exception e) {
                     e.printStackTrace();
-                }*/
+                }
                 handle.postDelayed(this, delay);
             }
-        }, delay);
+        }, delay);*/
 
     }
 

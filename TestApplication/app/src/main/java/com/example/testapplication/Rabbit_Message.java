@@ -1,7 +1,11 @@
 package com.example.testapplication;
 
+import android.os.Build;
 import android.os.StrictMode;
 
+import androidx.annotation.RequiresApi;
+
+import com.espertech.esper.client.EPRuntime;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -11,6 +15,7 @@ import com.rabbitmq.client.MessageProperties;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -20,10 +25,16 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  */
 public class Rabbit_Message  {
-    private final static String QUEUE_NAME = "hello";
+    //private final static String QUEUE_NAME = "hello";
     private static final String TASK_QUEUE_NAME = "task_queue";
 
+    public static EPRuntime runtime;
+    private final static String QUEUE_NAME = "Notification_queue";
+
     private static Random generator=new Random();
+
+    public Rabbit_Message() {
+    }
 
     public static void sendMessage() throws Exception {
         /*connect with rabbitmq*/
@@ -60,7 +71,46 @@ public class Rabbit_Message  {
         }
     }
 
+    //@RequiresApi(api = Build.VERSION_CODES.O)  //for date
+    //only this method is used (it takes the events from another project)
     public static void receiveMessage() throws Exception {
+        ConnectionFactory factory = new ConnectionFactory();
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        factory.setUsername("test");
+        factory.setPassword("test");
+        factory.setVirtualHost("/");
+        factory.setHost("192.168.1.8");
+        Connection connection = factory.newConnection();
+        Channel channel = connection.createChannel();
+
+        channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+        System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
+
+        DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+
+            String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
+
+            Deserializer deserializer= new Deserializer();
+            Object tmpev = deserializer.deserialize(delivery.getBody());
+
+            System.out.println(" [x] Received " + tmpev + "");
+            //convert object to string
+            String convertedToString = String.valueOf(tmpev);
+            //split by comma
+            String[] NumberArray = convertedToString.split(",");
+
+            int clientId, categoryId, productId;
+            clientId = Integer.parseInt(NumberArray[0]);
+            productId = Integer.parseInt(NumberArray[1]);
+            categoryId = Integer.parseInt(NumberArray[2]);
+            //System.out.println(clientId);
+            MainActivity.BeforeSend(clientId, productId, categoryId);
+        };
+        channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -> { });
+    }
+
+    public static void run() throws Exception {
         List<Integer> temps = new ArrayList<>();   /*arraylist with the temperatures*/
         List<Integer> hums = new ArrayList<>();   /*arraylist with the humidities*/
         ConnectionFactory factory = new ConnectionFactory();

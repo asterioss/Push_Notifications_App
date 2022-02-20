@@ -5,6 +5,7 @@ plugins {
 }
 
 android {
+    useLibrary 'org.apache.http.legacy'
     compileSdk 31
 
     defaultConfig {
@@ -56,6 +57,8 @@ dependencies {
     /*For Esper CEP*/
     implementation fileTree(dir: 'libs', include: ['asper-4.9.0.jar'])
     implementation fileTree(dir: 'libs', include: ['amqp-client-5.7.1.jar'])
+    implementation fileTree(dir: 'libs', include: ['mysql-connector-java-5.1.4.jar'])
+    implementation 'org.mariadb.jdbc:mariadb-java-client:2.1.2'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
@@ -65,6 +68,9 @@ dependencies {
     implementation 'com.google.android.gms:play-services-gcm:10.2.1'
     implementation 'com.onesignal:OneSignal:[4.0.0, 4.99.99]'
     implementation 'com.google.firebase:firebase-messaging:22.0.0'
+
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.0.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

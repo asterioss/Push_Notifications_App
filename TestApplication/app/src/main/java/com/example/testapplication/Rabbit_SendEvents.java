@@ -7,6 +7,7 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -16,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Rabbit_SendEvents {
     private static final String EXCHANGE_NAME = "logs";
 
-    public static void SendEvents(String player, int temp, int hum, String date) throws Exception {
+    public static void SendEvents(ArrayList<String> players, String category, String product, String product_url, String date) throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
         //set the heartbeat timeout to 60 seconds
         factory.setRequestedHeartbeat(60);
@@ -33,9 +34,18 @@ public class Rabbit_SendEvents {
             channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
 
             String message = null;
+            if(players.isEmpty() || category==null) System.out.println("No Notifications");
+            else {
+                message = category;
+                channel.basicPublish(EXCHANGE_NAME, "", null, message.getBytes("UTF-8"));
+                System.out.println(" [x] Sent '" + message + "'");
+                for(String player : players) {
+                    SendNotification.sendNotification(player, category, product, product_url, date);
+                }
+            }
             /*o user den exei kanei check tipota, ara den stelnei notification*/
-            if(temp==0 && hum==0) System.out.println("No Notifications");
-            /*o user exei kanei check kai ta 2*/
+            /*if(temp==0 && hum==0) System.out.println("No Notifications");
+            //o user exei kanei check kai ta 2
             else if(temp!=0 && hum!=0) {
                 int i;
                 for(i=0; i<2; i++) {
@@ -52,7 +62,7 @@ public class Rabbit_SendEvents {
                 SendNotification.sendTempetatureNotification(player, temp, date);
                 SendNotification.sendHumidityNotification(player, hum, date);
             }
-            /*o user exei kanei check se ena apo ta 2*/
+            //o user exei kanei check se ena apo ta 2
             else {
                 if(temp!=0) {
                     message = "" +temp;
@@ -65,7 +75,7 @@ public class Rabbit_SendEvents {
                 System.out.println(" [x] Sent '" + message + "'");
                 if(temp!=0) SendNotification.sendTempetatureNotification(player, temp, date);
                 if(hum!=0) SendNotification.sendHumidityNotification(player, hum, date);
-            }
+            }*/
             //channel.close();
             //connection.close();
 
