@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Rabbit_SendEvents {
     private static final String EXCHANGE_NAME = "logs";
 
-    public static void SendEvents(ArrayList<String> players, String category, String product, String product_url, String date) throws Exception {
+    public static void SendEvents(String player, String category, String product, String product_url, String date) throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
         //set the heartbeat timeout to 60 seconds
         factory.setRequestedHeartbeat(60);
@@ -34,14 +34,14 @@ public class Rabbit_SendEvents {
             channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
 
             String message = null;
-            if(players.isEmpty() || category==null) System.out.println("No Notifications");
+            if(player==null || category==null) System.out.println("No Notifications");
             else {
                 message = category;
                 channel.basicPublish(EXCHANGE_NAME, "", null, message.getBytes("UTF-8"));
                 System.out.println(" [x] Sent '" + message + "'");
-                for(String player : players) {
-                    SendNotification.sendNotification(player, category, product, product_url, date);
-                }
+                //for(String player : players) {
+                SendNotification.sendNotification(player, category, product, product_url, date);
+                //}
             }
             /*o user den exei kanei check tipota, ara den stelnei notification*/
             /*if(temp==0 && hum==0) System.out.println("No Notifications");

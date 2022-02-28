@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
     CheckBox tv, laptop, cellphone, bed, sofa, wash, oven, fridge, wardrobe, air, phone;
     boolean checked1, checked2, checked3, checked4, checked5, checked6, checked7, checked8, checked9, checked10, checked11;   /*xrisimopoiountai gia to save twn timwn tou checkbox*/
     private static boolean check_tv, check_laptop, check_cellphone, check_bed, check_sofa, check_wash, check_oven, check_fridge, check_wardrobe, check_air, check_phone;    /*analoga to subscribe, ginetai true to antistoixo*/
-    String player;    //player_id
+    //String player;    //player_id
     TextView OurText;
 
     //for MySQL database
@@ -52,12 +52,13 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
     public static final String USER = "root";
     public static final String PASS = "root";
 
+    static ArrayList<String> devices = new ArrayList<String>();
     //save the players to arraylist categories
     static ArrayList<String> players_tv = new ArrayList<String>(); // Create an ArrayList with player subscribes to temperatures
     static ArrayList<String> players_laptop = new ArrayList<String>(); // Create an ArrayList object with player subscribes to humidities
     static ArrayList<String> players_cellphone = new ArrayList<String>(); // Create an ArrayList with player subscribes to temperatures
     static ArrayList<String> players_bed = new ArrayList<String>(); // Create an ArrayList object with player subscribes to humidities
-    static ArrayList<String> players_sofa = new ArrayList<String>(); //
+    static ArrayList<String> players_sofa = new ArrayList<String>();
     static ArrayList<String> players_wash = new ArrayList<String>();
     static ArrayList<String> players_oven = new ArrayList<String>();
     static ArrayList<String> players_fridge = new ArrayList<String>();
@@ -144,19 +145,39 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
         }*/
 
         ArrayList<String> players = new ArrayList<String>();
+        String player = null, send_player=null;
 
-        //match the category
-        if(category_id==1) players = getPlayersTV();
-        else if(category_id==15) players = getPlayersFridge();
-        else if(category_id==16) players = getPlayersWashMachine();
-        else if(category_id==17) players = getPlayersSofa();
-        else if(category_id==18) players = getPlayersWardrobe();
-        else if(category_id==19) players = getPlayersBed();
-        else if(category_id==20) players = getPlayersAirCondition();
-        else if(category_id==21) players = getPlayersCellPhone();
-        else if(category_id==22) players = getPlayersLaptop();
-        else if(category_id==23) players = getPlayersOven();
-        else if(category_id==24) players = getPlayersPhone();
+        if(devices.size()>0) {
+            /*for(String device: getPlayersTV()) {
+                System.out.println("device: "+device);
+            }*/
+            if(clientID>=5 && clientID<=18) {
+                player=devices.get(0);
+                //d347f547-0864-4d72-93a8-ce474ffb675c
+            }
+            else {
+                if(devices.size()==1) player=devices.get(0);
+                else {
+                    player=devices.get(1);
+                    //c4846f1e-8c36-11ec-adb5-620e4f3c75e3
+                }
+            }
+        }
+
+        if(player!=null) {
+            //match the category (players = getPlayersTV();
+            if (category_id == 1 && players_tv.contains(player)) send_player = player;
+            else if (category_id == 15 && players_fridge.contains(player)) send_player = player;
+            else if (category_id == 16 && players_wash.contains(player)) send_player = player;
+            else if (category_id == 17 && players_sofa.contains(player)) send_player = player;
+            else if (category_id == 18 && players_wardrobe.contains(player)) send_player = player;
+            else if (category_id == 19 && players_bed.contains(player)) send_player = player;
+            else if (category_id == 20 && players_air.contains(player)) send_player = player;
+            else if (category_id == 21 && players_cellphone.contains(player)) send_player = player;
+            else if (category_id == 22 && players_laptop.contains(player)) send_player = player;
+            else if (category_id == 23 && players_oven.contains(player)) send_player = player;
+            else if (category_id == 24 && players_phone.contains(player)) send_player = player;
+        }
 
         //check where user is subscribed
         /*if(check_tv==true) tv1 = EsperTemperature.get_Temperature();
@@ -179,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
 
        try {
             //send the events to RabbitMQ
-            Rabbit_SendEvents.SendEvents(players, category_name, product_name, product_url, date);
+            Rabbit_SendEvents.SendEvents(send_player, category_name, product_name, product_url, date);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -212,6 +233,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
                     .setMessage("You've successfully subscribed to push notifications!")
                     .show();
             stateChanges.getTo().getUserId();
+            //if(!(devices.contains(stateChanges.getTo().getUserId()))) devices.add(stateChanges.getTo().getUserId(););
         }
         Log.i("Debug", "onOSSubscriptionChanged: " + stateChanges);
     }
@@ -348,7 +370,11 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
 
         //get player_id, who press the button
         String userId = device.getUserId();
-        player = userId;
+        //player = userId;
+        if(!(devices.contains(userId))) devices.add(userId);  //add the player_id to devices
+        /*for(String devicee: devices) {
+            System.out.println("device: "+devicee);
+        }*/
 
         OurText = findViewById(R.id.textView);
 
