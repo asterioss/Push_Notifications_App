@@ -33,6 +33,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -65,6 +69,9 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
     static ArrayList<String> players_wardrobe = new ArrayList<String>();
     static ArrayList<String> players_air = new ArrayList<String>();
     static ArrayList<String> players_phone = new ArrayList<String>();
+
+    //map the users with the available devices
+    public static HashMap<Integer, String> usersmapping = new HashMap<Integer, String>();
 
     //send the notification to the user after a delay of 15 seconds
     /*private final static int DELAY = 15000;
@@ -148,10 +155,42 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
         String player = null, send_player=null;
 
         if(devices.size()>0) {
+            // Get the iterator over the HashMap
+            Iterator<Map.Entry<Integer, String> >
+                    iterator = usersmapping.entrySet().iterator();
+            // flag to store result
+            boolean keyExists = false;
+
+            // Iterate over the HashMap
+            while (iterator.hasNext()) {
+                // Get the entry at this iteration
+                Map.Entry<Integer, String>
+                        entry
+                        = iterator.next();
+
+                // Check if this key is the required key
+                if (clientID == entry.getKey()) {
+                    keyExists = true;
+                }
+            }
+
+            if(keyExists==true) {
+                player=usersmapping.get(clientID);
+                System.out.println("Player exists. "+player);
+            }
+            else {
+                //get the last: devices.size()-1 (an eixa polles siskeues)
+                Random rand = new Random();
+                int random = rand.nextInt(devices.size());
+
+                usersmapping.put(clientID, devices.get(random));
+                player=usersmapping.get(clientID);
+                System.out.println("New Player. "+player);
+            }
             /*for(String device: getPlayersTV()) {
                 System.out.println("device: "+device);
             }*/
-            if(clientID>=5 && clientID<=18) {
+            /*if(clientID>=5 && clientID<=18) {
                 player=devices.get(0);
                 //d347f547-0864-4d72-93a8-ce474ffb675c
             }
@@ -161,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
                     player=devices.get(1);
                     //c4846f1e-8c36-11ec-adb5-620e4f3c75e3
                 }
-            }
+            }*/
         }
 
         if(player!=null) {
