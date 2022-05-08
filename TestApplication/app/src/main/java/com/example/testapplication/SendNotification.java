@@ -26,7 +26,7 @@ public class SendNotification {
             con.setDoInput(true);
 
             con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            con.setRequestProperty("Authorization", "Basic NTkxOTBjMTYtNGY4NS00YTc5LWJkODEtNzdkYmNkMTAwOTJi");
+            con.setRequestProperty("Authorization", "Basic ################################################");
             con.setRequestMethod("POST");
             String strJsonBody = "{"
                     +   "\"app_id\": \"1e9efea7-8568-4adb-acff-42527a5855bf\","
