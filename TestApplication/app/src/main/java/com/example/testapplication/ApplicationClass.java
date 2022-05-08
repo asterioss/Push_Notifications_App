@@ -4,11 +4,6 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
 import android.net.Uri;
-import android.net.wifi.p2p.WifiP2pManager;
-import android.nfc.Tag;
-import android.os.Handler;
-import android.os.Parcelable;
-import android.os.StrictMode;
 import android.util.Log;
 
 import com.onesignal.OSInAppMessage;
@@ -17,7 +12,7 @@ import com.onesignal.OSNotification;
 import com.onesignal.OneSignal;
 
 /**
- * The main application class where the app is starting.
+ * The main Application class where the app is starting with the appropriate initializations.
  *
  */
 public class ApplicationClass extends Application {
@@ -84,7 +79,6 @@ public class ApplicationClass extends Application {
             notificationReceivedEvent.complete(notification);
         });*/
 
-        //OneSignal.inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification);
         OneSignal.unsubscribeWhenNotificationsAreDisabled(true);
         OneSignal.pauseInAppMessages(true);
         OneSignal.setLocationShared(false);
@@ -94,11 +88,9 @@ public class ApplicationClass extends Application {
         //initialize the OneSignal SDK and enable push notifications
         OneSignal.provideUserConsent(true);
 
-        //boolean locationShared = OneSignal.isLocationShared();
-
         Log.d("Debug", "ONESIGNAL_SDK_INIT");
 
-        //call rabbitmq to receive the messages (client_id, product_id, productcategory_id)
+        //call RabbitMQ to receive the messages (client_id, product_id, category_id)
         new java.util.Timer().schedule(
                 new java.util.TimerTask() {
                     @Override
@@ -112,13 +104,8 @@ public class ApplicationClass extends Application {
                 },
                 13000
         );
-        /*try {
-            Rabbit_Message.sendMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
 
-       /* final Handler handle = new Handler();
+        /*final Handler handle = new Handler();
         final int delay = 60000; // 1000 milliseconds == 1 second
 
         //get new messages every minute with this handler

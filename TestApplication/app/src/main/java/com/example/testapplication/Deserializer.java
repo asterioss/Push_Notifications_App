@@ -1,13 +1,16 @@
 package com.example.testapplication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-//import kampia.esperLocation.EventTypes.ClientCloseEvent;
-//import kampia.esperLocation.EventTypes.Location;
 
 import java.io.Serializable;
 import java.util.Map;
 
-//This class is used for the deserialization of the object
+/**
+ * This class is used for the deserialization of an object.
+ *
+ */
+
+//
 public class Deserializer<T extends Serializable>  {
 
     private final ObjectMapper objectMapper = new ObjectMapper();

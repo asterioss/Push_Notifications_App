@@ -1,13 +1,9 @@
 package com.example.testapplication;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Parcelable;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -15,8 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import java.time.format.DateTimeFormatter;
-import java.time.LocalDateTime;
 
 import java.sql.*;
 import com.onesignal.OSDeviceState;
@@ -41,27 +35,29 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * The activity class, which is used when user make changes in the app (for example, if user clicks the button)
+ * The Main Activity class, which is used when we have changes in the app
+ * (for example, if the user clicks the button).
  *
  */
 public class MainActivity extends AppCompatActivity implements OSPermissionObserver,OSSubscriptionObserver {
+    //checkboxes for every category
     CheckBox tv, laptop, cellphone, bed, sofa, wash, oven, fridge, wardrobe, air, phone;
-    boolean checked1, checked2, checked3, checked4, checked5, checked6, checked7, checked8, checked9, checked10, checked11;   /*xrisimopoiountai gia to save twn timwn tou checkbox*/
-    private static boolean check_tv, check_laptop, check_cellphone, check_bed, check_sofa, check_wash, check_oven, check_fridge, check_wardrobe, check_air, check_phone;    /*analoga to subscribe, ginetai true to antistoixo*/
-    //String player;    //player_id
-    TextView OurText;
+    //used for the saving of values of the checkboxes
+    private boolean check_tv, check_laptop, check_cellphone, check_bed, check_sofa, check_wash, check_oven, check_fridge, check_wardrobe, check_phone, check_air;
+    private TextView OurText;
 
     //for MySQL database
-    public static final String DB_URL = "jdbc:mysql://192.168.1.8:3306/Cms?autoReconnect=true&useSSL=false";
+    public static final String DB_URL = "jdbc:mysql://192.168.1.3:3306/Cms?autoReconnect=true&useSSL=false";
     public static final String USER = "root";
     public static final String PASS = "root";
 
+    //save the available devices
     static ArrayList<String> devices = new ArrayList<String>();
-    //save the players to arraylist categories
-    static ArrayList<String> players_tv = new ArrayList<String>(); // Create an ArrayList with player subscribes to temperatures
-    static ArrayList<String> players_laptop = new ArrayList<String>(); // Create an ArrayList object with player subscribes to humidities
-    static ArrayList<String> players_cellphone = new ArrayList<String>(); // Create an ArrayList with player subscribes to temperatures
-    static ArrayList<String> players_bed = new ArrayList<String>(); // Create an ArrayList object with player subscribes to humidities
+    //save the players to arraylist of categories
+    static ArrayList<String> players_tv = new ArrayList<String>();
+    static ArrayList<String> players_laptop = new ArrayList<String>();
+    static ArrayList<String> players_cellphone = new ArrayList<String>();
+    static ArrayList<String> players_bed = new ArrayList<String>();
     static ArrayList<String> players_sofa = new ArrayList<String>();
     static ArrayList<String> players_wash = new ArrayList<String>();
     static ArrayList<String> players_oven = new ArrayList<String>();
@@ -73,52 +69,13 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
     //map the users with the available devices
     public static HashMap<Integer, String> usersmapping = new HashMap<Integer, String>();
 
-    //send the notification to the user after a delay of 15 seconds
-    /*private final static int DELAY = 15000;
-    private final Handler handler = new Handler();
-    private final Timer timer = new Timer();
-    private final TimerTask task = new TimerTask() {
-        private int counter = 0;
-        public void run() {
-            handler.post(new Runnable() {
-                public void run() {
-                    //System.out.println("mphka");
-                    //kalei 2o rabbitmq
-                    int temp, hum;
-                    String date;
-
-                    if(check_tv==false) temp=0;
-                    else temp = EsperTemperature.get_Temperature();
-                    if(humid==false) hum=0;
-                    else hum = EsperTemperature.get_Humidity();
-                    date = EsperTemperature.get_Date();
-
-                    try {
-                        Rabbit_SendEvents.ReceiveEvents(player, temp, hum, date);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        Rabbit_SendEvents.SendEvents(player, temp, hum, date);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    timer.cancel();
-                    //counter++;
-                }
-            });
-        }
-    };*/
-
-    //take the message from RabbitMQ and send the notification to the user
     //@RequiresApi(api = Build.VERSION_CODES.O)  //for date
+    //this method takes the message from RabbitMQ and and it calls the 2nd RabbitMQ to send the notification to the user
     public static void BeforeSend(int clientID, int product_id, int category_id) {
-        //kalei 2o rabbitmq
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        String product_name = null, category_name=null, product_url=null;
+        String product_name = null, category_name = null, product_url = null;
         Connection conn=null;
         Statement stmt=null;
         try {
@@ -152,23 +109,23 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
         }*/
 
         ArrayList<String> players = new ArrayList<String>();
-        String player = null, send_player=null;
+        String player = null, send_player = null;
 
         if(devices.size()>0) {
-            // Get the iterator over the HashMap
+            //Get the iterator over the HashMap
             Iterator<Map.Entry<Integer, String> >
                     iterator = usersmapping.entrySet().iterator();
-            // flag to store result
+            //flag to store result
             boolean keyExists = false;
 
-            // Iterate over the HashMap
+            //Iterate over the HashMap
             while (iterator.hasNext()) {
-                // Get the entry at this iteration
+                //Get the entry at this iteration
                 Map.Entry<Integer, String>
                         entry
                         = iterator.next();
 
-                // Check if this key is the required key
+                //Check if this key is the required key
                 if (clientID == entry.getKey()) {
                     keyExists = true;
                 }
@@ -179,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
                 System.out.println("Player exists. "+player);
             }
             else {
-                //get the last: devices.size()-1 (an eixa polles siskeues)
+                //save a new player to hashmap
                 Random rand = new Random();
                 int random = rand.nextInt(devices.size());
 
@@ -187,24 +144,10 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
                 player=usersmapping.get(clientID);
                 System.out.println("New Player. "+player);
             }
-            /*for(String device: getPlayersTV()) {
-                System.out.println("device: "+device);
-            }*/
-            /*if(clientID>=5 && clientID<=18) {
-                player=devices.get(0);
-                //d347f547-0864-4d72-93a8-ce474ffb675c
-            }
-            else {
-                if(devices.size()==1) player=devices.get(0);
-                else {
-                    player=devices.get(1);
-                    //c4846f1e-8c36-11ec-adb5-620e4f3c75e3
-                }
-            }*/
         }
 
         if(player!=null) {
-            //match the category (players = getPlayersTV();
+            //match the category and check if player is subscibed
             if (category_id == 1 && players_tv.contains(player)) send_player = player;
             else if (category_id == 15 && players_fridge.contains(player)) send_player = player;
             else if (category_id == 16 && players_wash.contains(player)) send_player = player;
@@ -218,27 +161,16 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
             else if (category_id == 24 && players_phone.contains(player)) send_player = player;
         }
 
-        //check where user is subscribed
-        /*if(check_tv==true) tv1 = EsperTemperature.get_Temperature();
-        if(check_laptop==true) laptop1 = EsperTemperature.get_Humidity();
-        if(check_cellphone==true) {
-
-        }
-        if(check_bed==true) {
-            if(category.equals("bed")) {
-                //send notification
-            }
-        }*/
         String date;
+        date = null;   //gia thn wra
         //get the current date
         /*DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
         //System.out.println(dtf.format(now));
         date = dtf.format(now);*/
-        date = null;   //gia thn wra
 
-       try {
-            //send the events to RabbitMQ
+        try {
+            //send the events to the second RabbitMQ service
             Rabbit_SendEvents.SendEvents(send_player, category_name, product_name, product_url, date);
         } catch (Exception e) {
             e.printStackTrace();
@@ -278,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
     }
 
     @Override
-    /*auto ginetai otan mpoume sto activity*/
+    /*this method runs when activity is starting*/
     public void onStart() {
         super.onStart();
         //pernoume tis times twn checkboxes
@@ -295,125 +227,119 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
         air = (CheckBox)findViewById(R.id.checkbox_aircondition);
 
         //we check if they are checked or not from the saving value in PreferenceManager
-        boolean checked1 = PreferenceManager.getDefaultSharedPreferences(this)
+        boolean check_tv = PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean("tv", false);
-        tv.setChecked(checked1);
+        tv.setChecked(check_tv);
 
-        boolean checked2 = PreferenceManager.getDefaultSharedPreferences(this)
+        boolean check_laptop = PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean("laptop", false);
-        laptop.setChecked(checked2);
+        laptop.setChecked(check_laptop);
 
-        boolean checked3 = PreferenceManager.getDefaultSharedPreferences(this)
+        boolean check_cellphone = PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean("cellphone", false);
-        cellphone.setChecked(checked3);
+        cellphone.setChecked(check_cellphone);
 
-        boolean checked4 = PreferenceManager.getDefaultSharedPreferences(this)
+        boolean check_bed = PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean("bed", false);
-        bed.setChecked(checked4);
+        bed.setChecked(check_bed);
 
-        boolean checked5 = PreferenceManager.getDefaultSharedPreferences(this)
+        boolean check_sofa = PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean("sofa", false);
-        sofa.setChecked(checked5);
+        sofa.setChecked(check_sofa);
 
-        boolean checked6 = PreferenceManager.getDefaultSharedPreferences(this)
+        boolean check_wash = PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean("wash_machine", false);
-        wash.setChecked(checked6);
+        wash.setChecked(check_wash);
 
-        boolean checked7 = PreferenceManager.getDefaultSharedPreferences(this)
+        boolean check_oven = PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean("oven", false);
-        oven.setChecked(checked7);
+        oven.setChecked(check_oven);
 
-        boolean checked8 = PreferenceManager.getDefaultSharedPreferences(this)
+        boolean check_fridge = PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean("fridge", false);
-        fridge.setChecked(checked8);
+        fridge.setChecked(check_fridge);
 
-        boolean checked9 = PreferenceManager.getDefaultSharedPreferences(this)
+        boolean check_wardrobe = PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean("wardrobe", false);
-        wardrobe.setChecked(checked9);
+        wardrobe.setChecked(check_wardrobe);
 
-        boolean checked10 = PreferenceManager.getDefaultSharedPreferences(this)
+        boolean check_phone = PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean("telephones", false);
-        phone.setChecked(checked10);
+        phone.setChecked(check_phone);
 
-        boolean checked11 = PreferenceManager.getDefaultSharedPreferences(this)
+        boolean check_air = PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean("air_condition", false);
-        air.setChecked(checked11);
+        air.setChecked(check_air);
     }
 
     @Override
-    /*auto ginetai otan kleisei to app*/
+    /*this method runs when activity is stopping*/
     public void onStop() {
         super.onStop();
         //we check the values of checkbox and we save the value in PreferenceManager
-        if(tv.isChecked()) checked1=true;
-        else checked1=false;
+        if(tv.isChecked()) check_tv=true;
+        else check_tv=false;
         PreferenceManager.getDefaultSharedPreferences(this).edit()
-                .putBoolean("tv", checked1).commit();
+                .putBoolean("tv", check_tv).commit();
 
-        if(laptop.isChecked()) checked2=true;
-        else checked2=false;
+        if(laptop.isChecked()) check_laptop=true;
+        else check_laptop=false;
         PreferenceManager.getDefaultSharedPreferences(this).edit()
-                .putBoolean("laptop", checked2).commit();
+                .putBoolean("laptop", check_laptop).commit();
 
-        if(cellphone.isChecked()) checked3=true;
-        else checked3=false;
+        if(cellphone.isChecked()) check_cellphone=true;
+        else check_cellphone=false;
         PreferenceManager.getDefaultSharedPreferences(this).edit()
-                .putBoolean("cellphone", checked3).commit();
+                .putBoolean("cellphone", check_cellphone).commit();
 
-        if(bed.isChecked()) checked4=true;
-        else checked4=false;
+        if(bed.isChecked()) check_bed=true;
+        else check_bed=false;
         PreferenceManager.getDefaultSharedPreferences(this).edit()
-                .putBoolean("bed", checked4).commit();
+                .putBoolean("bed", check_bed).commit();
 
-        if(sofa.isChecked()) checked5=true;
-        else checked5=false;
+        if(sofa.isChecked()) check_sofa=true;
+        else check_sofa=false;
         PreferenceManager.getDefaultSharedPreferences(this).edit()
-                .putBoolean("sofa", checked5).commit();
+                .putBoolean("sofa", check_sofa).commit();
 
-        if(wash.isChecked()) checked6=true;
-        else checked6=false;
+        if(wash.isChecked()) check_wash=true;
+        else check_wash=false;
         PreferenceManager.getDefaultSharedPreferences(this).edit()
-                .putBoolean("wash_machine", checked6).commit();
+                .putBoolean("wash_machine", check_wash).commit();
 
-        if(oven.isChecked()) checked7=true;
-        else checked7=false;
+        if(oven.isChecked()) check_oven=true;
+        else check_oven=false;
         PreferenceManager.getDefaultSharedPreferences(this).edit()
-                .putBoolean("oven", checked7).commit();
+                .putBoolean("oven", check_oven).commit();
 
-        if(fridge.isChecked()) checked8=true;
-        else checked8=false;
+        if(fridge.isChecked()) check_fridge=true;
+        else check_fridge=false;
         PreferenceManager.getDefaultSharedPreferences(this).edit()
-                .putBoolean("fridge", checked8).commit();
+                .putBoolean("fridge", check_fridge).commit();
 
-        if(wardrobe.isChecked()) checked9=true;
-        else checked9=false;
+        if(wardrobe.isChecked()) check_wardrobe=true;
+        else check_wardrobe=false;
         PreferenceManager.getDefaultSharedPreferences(this).edit()
-                .putBoolean("wardrobe", checked9).commit();
+                .putBoolean("wardrobe", check_wardrobe).commit();
 
-        if(phone.isChecked()) checked10=true;
-        else checked10=false;
+        if(phone.isChecked()) check_phone=true;
+        else check_phone=false;
         PreferenceManager.getDefaultSharedPreferences(this).edit()
-                .putBoolean("telephones", checked10).commit();
+                .putBoolean("telephones", check_phone).commit();
 
-        if(air.isChecked()) checked11=true;
-        else checked11=false;
+        if(air.isChecked()) check_air=true;
+        else check_air=false;
         PreferenceManager.getDefaultSharedPreferences(this).edit()
-                .putBoolean("air_condition", checked11).commit();
-
-        //System.out.println("ola komple");
+                .putBoolean("air_condition", check_air).commit();
     }
 
-    //when user clicks the subscribe button
+    //this method runs when the user clicks the subscribe button
     public void onClick(View view) {
         OSDeviceState device = OneSignal.getDeviceState();
 
         //get player_id, who press the button
         String userId = device.getUserId();
-        //player = userId;
         if(!(devices.contains(userId))) devices.add(userId);  //add the player_id to devices
-        /*for(String devicee: devices) {
-            System.out.println("device: "+devicee);
-        }*/
 
         OurText = findViewById(R.id.textView);
 
@@ -422,7 +348,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
             check_tv = true;
             if (players_tv.contains(userId)) tv1=1;
             if(tv1==0) {
-                /*we save the user to playerstemp arraylist*/
+                /*we save the user to players_tv arraylist*/
                 players_tv.add(userId);
                 System.out.println("Player " +userId+ " subscribed to TV");
             }
@@ -432,7 +358,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
             if (players_tv.contains(userId)) tv1=1;
             else tv1=0;
             if(tv1==1) {
-                /*we delete the user from playerstemp arraylist*/
+                /*we delete the user from players_tv arraylist*/
                 players_tv.remove(userId);
                 System.out.println("Player " +userId+ " unsubscribed from TV");
             }
@@ -441,7 +367,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
             check_laptop = true;
             if (players_laptop.contains(userId)) laptop1=1;
             if(laptop1==0) {
-                /*we save the user to playershum arraylist*/
+                /*we save the user to players_laptop arraylist*/
                 players_laptop.add(userId);
                 System.out.println("Player " +userId+ " subscribed to Laptop");
             }
@@ -451,7 +377,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
             if (players_laptop.contains(userId)) laptop1=1;
             else laptop1=0;
             if(laptop1==1) {
-                /*we delete the user from playerstemp arraylist*/
+                /*we delete the user from players_laptop arraylist*/
                 players_laptop.remove(userId);
                 System.out.println("Player " +userId+ " unsubscribed from Laptop");
             }
@@ -460,7 +386,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
             check_cellphone = true;
             if (players_phone.contains(userId)) cellphone1=1;
             if(cellphone1==0) {
-                /*we save the user to playershum arraylist*/
+                /*we save the user to players_phone arraylist*/
                 players_phone.add(userId);
                 System.out.println("Player " +userId+ " subscribed to CellPhone");
             }
@@ -470,7 +396,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
             if (players_phone.contains(userId)) cellphone1=1;
             else cellphone1=0;
             if(cellphone1==1) {
-                /*we delete the user from playerstemp arraylist*/
+                /*we delete the user from players_phone arraylist*/
                 players_phone.remove(userId);
                 System.out.println("Player " +userId+ " unsubscribed from CellPhone");
             }
@@ -479,7 +405,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
             check_bed = true;
             if (players_bed.contains(userId)) bed1=1;
             if(bed1==0) {
-                /*we save the user to playershum arraylist*/
+                /*we save the user to players_bed arraylist*/
                 players_bed.add(userId);
                 System.out.println("Player " +userId+ " subscribed to Bed");
             }
@@ -489,7 +415,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
             if (players_bed.contains(userId)) bed1=1;
             else bed1=0;
             if(bed1==1) {
-                /*we delete the user from playerstemp arraylist*/
+                /*we delete the user from players_bed arraylist*/
                 players_bed.remove(userId);
                 System.out.println("Player " +userId+ " unsubscribed from Bed");
             }
@@ -498,7 +424,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
             check_sofa = true;
             if (players_sofa.contains(userId)) sofa1=1;
             if(sofa1==0) {
-                /*we save the user to playerstemp arraylist*/
+                /*we save the user to players_sofa arraylist*/
                 players_sofa.add(userId);
                 System.out.println("Player " +userId+ " subscribed to Sofa");
             }
@@ -508,7 +434,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
             if (players_sofa.contains(userId)) sofa1=1;
             else sofa1=0;
             if(sofa1==1) {
-                /*we delete the user from playerstemp arraylist*/
+                /*we delete the user from players_sofa arraylist*/
                 players_sofa.remove(userId);
                 System.out.println("Player " +userId+ " unsubscribed from Sofa");
             }
@@ -517,7 +443,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
             check_wash = true;
             if (players_wash.contains(userId)) wash1=1;
             if(wash1==0) {
-                /*we save the user to playershum arraylist*/
+                /*we save the user to players_wash arraylist*/
                 players_wash.add(userId);
                 System.out.println("Player " +userId+ " subscribed to Washing Machine");
             }
@@ -527,7 +453,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
             if (players_wash.contains(userId)) wash1=1;
             else wash1=0;
             if(wash1==1) {
-                /*we delete the user from playerstemp arraylist*/
+                /*we delete the user from players_wash arraylist*/
                 players_wash.remove(userId);
                 System.out.println("Player " +userId+ " unsubscribed from Washing Machine");
             }
@@ -536,7 +462,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
             check_oven = true;
             if (players_oven.contains(userId)) oven1=1;
             if(oven1==0) {
-                /*we save the user to playershum arraylist*/
+                /*we save the user to players_oven arraylist*/
                 players_oven.add(userId);
                 System.out.println("Player " +userId+ " subscribed to Oven");
             }
@@ -546,7 +472,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
             if (players_oven.contains(userId)) oven1=1;
             else oven1=0;
             if(oven1==1) {
-                /*we delete the user from playerstemp arraylist*/
+                /*we delete the user from players_oven arraylist*/
                 players_oven.remove(userId);
                 System.out.println("Player " +userId+ " unsubscribed from Oven");
             }
@@ -555,7 +481,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
             check_fridge = true;
             if (players_fridge.contains(userId)) fridge1=1;
             if(fridge1==0) {
-                /*we save the user to playershum arraylist*/
+                /*we save the user to players_fridge arraylist*/
                 players_fridge.add(userId);
                 System.out.println("Player " +userId+ " subscribed to Fridge");
             }
@@ -565,7 +491,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
             if (players_fridge.contains(userId)) fridge1=1;
             else fridge1=0;
             if(fridge1==1) {
-                /*we delete the user from playerstemp arraylist*/
+                /*we delete the user from players_fridge arraylist*/
                 players_fridge.remove(userId);
                 System.out.println("Player " +userId+ " unsubscribed from Fridge");
             }
@@ -574,7 +500,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
             check_wardrobe = true;
             if (players_wardrobe.contains(userId)) wardrobe1=1;
             if(wardrobe1==0) {
-                /*we save the user to playershum arraylist*/
+                /*we save the user to players_wardrobe arraylist*/
                 players_wardrobe.add(userId);
                 System.out.println("Player " +userId+ " subscribed to Wardrobe");
             }
@@ -584,7 +510,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
             if (players_wardrobe.contains(userId)) wardrobe1=1;
             else wardrobe1=0;
             if(wardrobe1==1) {
-                /*we delete the user from playerstemp arraylist*/
+                /*we delete the user from players_wardrobe arraylist*/
                 players_wardrobe.remove(userId);
                 System.out.println("Player " +userId+ " unsubscribed from Wardrobe");
             }
@@ -593,7 +519,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
             check_air = true;
             if (players_air.contains(userId)) air1=1;
             if(air1==0) {
-                /*we save the user to playershum arraylist*/
+                /*we save the user to players_air arraylist*/
                 players_air.add(userId);
                 System.out.println("Player " +userId+ " subscribed to Air Condition");
             }
@@ -603,7 +529,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
             if (players_air.contains(userId)) air1=1;
             else air1=0;
             if(air1==1) {
-                /*we delete the user from playerstemp arraylist*/
+                /*we delete the user from players_air arraylist*/
                 players_air.remove(userId);
                 System.out.println("Player " +userId+ " unsubscribed from Air Condition");
             }
@@ -612,7 +538,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
             check_phone = true;
             if (players_phone.contains(userId)) phone1=1;
             if(phone1==0) {
-                /*we save the user to playershum arraylist*/
+                /*we save the user to players_phone arraylist*/
                 players_phone.add(userId);
                 System.out.println("Player " +userId+ " subscribed to Telephones");
             }
@@ -622,24 +548,18 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
             if (players_phone.contains(userId)) phone1=1;
             else phone1=0;
             if(phone1==1) {
-                /*we delete the user from playerstemp arraylist*/
+                /*we delete the user from players_phone arraylist*/
                 players_phone.remove(userId);
                 System.out.println("Player " +userId+ " unsubscribed from Telephones");
             }
         }
         OurText.setText("You subscribed successfully. You can leave the app now.");
-        //BeforeSend();
-        //timer.schedule(task, DELAY, DELAY);
-
-        /*if(userId!=null) EsperTemperature.whenButtonClicked(userId, 1);
-        else System.out.println("Null UserId. Can't send notification");*/
     }
 
-    /*epistrefei tous paiktes pou ekanan subscribe sth tv*/
+    /*epistrefoun tous paiktes pou ekanan subscribe sto sygkekrimeno arraylist kathogorias*/
     public static ArrayList<String> getPlayersTV() {
         return players_tv;
     }
-    /*epistrefei tous paiktes pou ekanan subscribe sto laptop*/
     public static ArrayList<String> getPlayersLaptop() {
         return players_laptop;
     }

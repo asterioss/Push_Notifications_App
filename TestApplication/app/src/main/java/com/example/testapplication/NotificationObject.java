@@ -3,9 +3,11 @@ package com.example.testapplication;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-//pairnei to notification object apo rabbitmq kai to analyei
+/**
+ * This class takes the notification from the RabbitMQ service and it analyzes it.
+ *
+ */
 public class NotificationObject {
-
     private int clientID;
     private int productID;
     private int productCategoryID;
@@ -56,17 +58,4 @@ public class NotificationObject {
         }
         return retVal;
     }
-
-    /*public static Object deserialize(byte[] data) {
-        ObjectMapper mapper = new ObjectMapper();
-        NotificationObject notif = null;
-        try {
-            notif = mapper.readValue(data, NotificationObject.class);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return  notif;
-    }*/
 }
