@@ -1,5 +1,7 @@
 package com.example.testapplication;
 
+import androidx.annotation.NonNull;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -42,6 +44,7 @@ public class NotificationObject {
         this.productID = productID;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return ""+this.clientID+","+this.productID+","+this.productCategoryID+"";

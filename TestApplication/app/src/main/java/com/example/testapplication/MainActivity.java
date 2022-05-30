@@ -8,11 +8,9 @@ import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import java.sql.*;
 import com.onesignal.OSDeviceState;
 import com.onesignal.OSPermissionObserver;
 import com.onesignal.OSPermissionStateChanges;
@@ -23,16 +21,12 @@ import com.onesignal.OneSignal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * The Main Activity class, which is used when we have changes in the app
@@ -44,40 +38,40 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
     CheckBox tv, laptop, cellphone, bed, sofa, wash, oven, fridge, wardrobe, air, phone;
     //used for the saving of values of the checkboxes
     private boolean check_tv, check_laptop, check_cellphone, check_bed, check_sofa, check_wash, check_oven, check_fridge, check_wardrobe, check_phone, check_air;
-    private TextView OurText;
+    TextView OurText;
 
     //for MySQL database
-    public static final String DB_URL = "jdbc:mysql://192.168.1.3:3306/Cms?autoReconnect=true&useSSL=false";
+    public static final String DB_URL = "jdbc:mysql://192.168.1.7:3306/Cms?autoReconnect=true&useSSL=false";
     public static final String USER = "root";
     public static final String PASS = "root";
 
     //save the available devices
-    static ArrayList<String> devices = new ArrayList<String>();
+    static ArrayList<String> devices = new ArrayList<>();
     //save the players to arraylist of categories
-    static ArrayList<String> players_tv = new ArrayList<String>();
-    static ArrayList<String> players_laptop = new ArrayList<String>();
-    static ArrayList<String> players_cellphone = new ArrayList<String>();
-    static ArrayList<String> players_bed = new ArrayList<String>();
-    static ArrayList<String> players_sofa = new ArrayList<String>();
-    static ArrayList<String> players_wash = new ArrayList<String>();
-    static ArrayList<String> players_oven = new ArrayList<String>();
-    static ArrayList<String> players_fridge = new ArrayList<String>();
-    static ArrayList<String> players_wardrobe = new ArrayList<String>();
-    static ArrayList<String> players_air = new ArrayList<String>();
-    static ArrayList<String> players_phone = new ArrayList<String>();
+    static ArrayList<String> players_tv = new ArrayList<>();
+    static ArrayList<String> players_laptop = new ArrayList<>();
+    static ArrayList<String> players_cellphone = new ArrayList<>();
+    static ArrayList<String> players_bed = new ArrayList<>();
+    static ArrayList<String> players_sofa = new ArrayList<>();
+    static ArrayList<String> players_wash = new ArrayList<>();
+    static ArrayList<String> players_oven = new ArrayList<>();
+    static ArrayList<String> players_fridge = new ArrayList<>();
+    static ArrayList<String> players_wardrobe = new ArrayList<>();
+    static ArrayList<String> players_air = new ArrayList<>();
+    static ArrayList<String> players_phone = new ArrayList<>();
 
     //map the users with the available devices
-    public static HashMap<Integer, String> usersmapping = new HashMap<Integer, String>();
+    public static HashMap<Integer, String> usersmapping = new HashMap<>();
 
-    //@RequiresApi(api = Build.VERSION_CODES.O)  //for date
+    //@RequiresApi(api = Build.VERSION_CODES.O)  //for the date
     //this method takes the message from RabbitMQ and and it calls the 2nd RabbitMQ to send the notification to the user
     public static void BeforeSend(int clientID, int product_id, int category_id) {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
         String product_name = null, category_name = null, product_url = null;
-        Connection conn=null;
-        Statement stmt=null;
+        Connection conn;
+        Statement stmt;
         try {
             Class.forName("com.mysql.jdbc.Driver");
             conn = DriverManager.getConnection(
@@ -100,15 +94,12 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
                 product_url = result.getString("productUrl");
                 System.out.println("Product: "+product_name);
             }
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } /*finally {
             conn.close();
         }*/
 
-        ArrayList<String> players = new ArrayList<String>();
         String player = null, send_player = null;
 
         if(devices.size()>0) {
@@ -131,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
                 }
             }
 
-            if(keyExists==true) {
+            if(keyExists) {
                 player=usersmapping.get(clientID);
                 System.out.println("Player exists. "+player);
             }
@@ -161,17 +152,16 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
             else if (category_id == 24 && players_phone.contains(player)) send_player = player;
         }
 
-        String date;
-        date = null;   //gia thn wra
-        //get the current date
-        /*DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        //get the current date (if you want it for the notification)
+        /*String date;
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
         //System.out.println(dtf.format(now));
         date = dtf.format(now);*/
 
         try {
             //send the events to the second RabbitMQ service
-            Rabbit_SendEvents.SendEvents(send_player, category_name, product_name, product_url, date);
+            Rabbit_SendEvents.SendEvents(send_player, category_name, product_name, product_url);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -214,17 +204,17 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
     public void onStart() {
         super.onStart();
         //pernoume tis times twn checkboxes
-        tv = (CheckBox)findViewById(R.id.checkbox_tv);
-        laptop = (CheckBox)findViewById(R.id.checkbox_laptop);
-        cellphone = (CheckBox)findViewById(R.id.checkbox_cellphone);
-        bed = (CheckBox)findViewById(R.id.checkbox_bed);
-        sofa = (CheckBox)findViewById(R.id.checkbox_sofa);
-        wash = (CheckBox)findViewById(R.id.checkbox_washmachine);
-        oven = (CheckBox)findViewById(R.id.checkbox_oven);
-        fridge = (CheckBox)findViewById(R.id.checkbox_fridge);
-        wardrobe = (CheckBox)findViewById(R.id.checkbox_wardrobe);
-        phone = (CheckBox)findViewById(R.id.checkbox_telephones);
-        air = (CheckBox)findViewById(R.id.checkbox_aircondition);
+        tv = findViewById(R.id.checkbox_tv);
+        laptop = findViewById(R.id.checkbox_laptop);
+        cellphone = findViewById(R.id.checkbox_cellphone);
+        bed = findViewById(R.id.checkbox_bed);
+        sofa = findViewById(R.id.checkbox_sofa);
+        wash = findViewById(R.id.checkbox_washmachine);
+        oven = findViewById(R.id.checkbox_oven);
+        fridge = findViewById(R.id.checkbox_fridge);
+        wardrobe = findViewById(R.id.checkbox_wardrobe);
+        phone = findViewById(R.id.checkbox_telephones);
+        air = findViewById(R.id.checkbox_aircondition);
 
         //we check if they are checked or not from the saving value in PreferenceManager
         boolean check_tv = PreferenceManager.getDefaultSharedPreferences(this)
@@ -277,67 +267,58 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
     public void onStop() {
         super.onStop();
         //we check the values of checkbox and we save the value in PreferenceManager
-        if(tv.isChecked()) check_tv=true;
-        else check_tv=false;
+        check_tv = tv.isChecked();   //returns true or false
         PreferenceManager.getDefaultSharedPreferences(this).edit()
-                .putBoolean("tv", check_tv).commit();
+                .putBoolean("tv", check_tv).apply();
 
-        if(laptop.isChecked()) check_laptop=true;
-        else check_laptop=false;
+        check_laptop = laptop.isChecked();
         PreferenceManager.getDefaultSharedPreferences(this).edit()
-                .putBoolean("laptop", check_laptop).commit();
+                .putBoolean("laptop", check_laptop).apply();
 
-        if(cellphone.isChecked()) check_cellphone=true;
-        else check_cellphone=false;
+        check_cellphone = cellphone.isChecked();
         PreferenceManager.getDefaultSharedPreferences(this).edit()
-                .putBoolean("cellphone", check_cellphone).commit();
+                .putBoolean("cellphone", check_cellphone).apply();
 
-        if(bed.isChecked()) check_bed=true;
-        else check_bed=false;
+        check_bed = bed.isChecked();
         PreferenceManager.getDefaultSharedPreferences(this).edit()
-                .putBoolean("bed", check_bed).commit();
+                .putBoolean("bed", check_bed).apply();
 
-        if(sofa.isChecked()) check_sofa=true;
-        else check_sofa=false;
+        check_sofa = sofa.isChecked();
         PreferenceManager.getDefaultSharedPreferences(this).edit()
-                .putBoolean("sofa", check_sofa).commit();
+                .putBoolean("sofa", check_sofa).apply();
 
-        if(wash.isChecked()) check_wash=true;
-        else check_wash=false;
+        check_wash = wash.isChecked();
         PreferenceManager.getDefaultSharedPreferences(this).edit()
-                .putBoolean("wash_machine", check_wash).commit();
+                .putBoolean("wash_machine", check_wash).apply();
 
-        if(oven.isChecked()) check_oven=true;
-        else check_oven=false;
+        check_oven = oven.isChecked();
         PreferenceManager.getDefaultSharedPreferences(this).edit()
-                .putBoolean("oven", check_oven).commit();
+                .putBoolean("oven", check_oven).apply();
 
-        if(fridge.isChecked()) check_fridge=true;
-        else check_fridge=false;
+        check_fridge = fridge.isChecked();
         PreferenceManager.getDefaultSharedPreferences(this).edit()
-                .putBoolean("fridge", check_fridge).commit();
+                .putBoolean("fridge", check_fridge).apply();
 
-        if(wardrobe.isChecked()) check_wardrobe=true;
-        else check_wardrobe=false;
+        check_wardrobe = wardrobe.isChecked();
         PreferenceManager.getDefaultSharedPreferences(this).edit()
-                .putBoolean("wardrobe", check_wardrobe).commit();
+                .putBoolean("wardrobe", check_wardrobe).apply();
 
-        if(phone.isChecked()) check_phone=true;
-        else check_phone=false;
+        check_phone = phone.isChecked();
         PreferenceManager.getDefaultSharedPreferences(this).edit()
-                .putBoolean("telephones", check_phone).commit();
+                .putBoolean("telephones", check_phone).apply();
 
-        if(air.isChecked()) check_air=true;
-        else check_air=false;
+        check_air = air.isChecked();
         PreferenceManager.getDefaultSharedPreferences(this).edit()
-                .putBoolean("air_condition", check_air).commit();
+                .putBoolean("air_condition", check_air).apply();
     }
 
     //this method runs when the user clicks the subscribe button
     public void onClick(View view) {
         OSDeviceState device = OneSignal.getDeviceState();
 
-        //get player_id, who press the button
+        //get user_id, who press the button
+        //assert device because the getUserId() method maybe return null
+        assert device != null;
         String userId = device.getUserId();
         if(!(devices.contains(userId))) devices.add(userId);  //add the player_id to devices
 

@@ -3,14 +3,11 @@ package com.example.testapplication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.Serializable;
-import java.util.Map;
 
 /**
  * This class is used for the deserialization of an object.
  *
  */
-
-//
 public class Deserializer<T extends Serializable>  {
 
     private final ObjectMapper objectMapper = new ObjectMapper();

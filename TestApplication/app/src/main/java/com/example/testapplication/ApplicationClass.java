@@ -1,6 +1,5 @@
 package com.example.testapplication;
 
-import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
 import android.net.Uri;
@@ -8,7 +7,6 @@ import android.util.Log;
 
 import com.onesignal.OSInAppMessage;
 import com.onesignal.OSInAppMessageLifecycleHandler;
-import com.onesignal.OSNotification;
 import com.onesignal.OneSignal;
 
 /**
@@ -54,8 +52,8 @@ public class ApplicationClass extends Application {
         //linking notification to URL (when user clicks the notification, it will send him to a website.
         OneSignal.setNotificationOpenedHandler(
                 result -> {
-                    //String title = result.getNotification().getTitle();
-                    //System.out.println("Title:" +title);
+                    /*String title = result.getNotification().getTitle();
+                    System.out.println("Title:" +title);*/
 
                     String launchURL = result.getNotification().getLaunchURL();
                     Log.i("OneSignalExample", "launchUrl set with value: " + launchURL);
@@ -70,7 +68,7 @@ public class ApplicationClass extends Application {
                     }
                 });
 
-        //(NOT USED) -- this can hide the notification and send it when we want
+        //(NOT USED) -- this method can hide the notification and send it when we want
         /*OneSignal.setNotificationWillShowInForegroundHandler(notificationReceivedEvent -> {
             OneSignal.onesignalLog(OneSignal.LOG_LEVEL.VERBOSE, "NotificationWillShowInForegroundHandler fired!" +
                     " with notification event: " + notificationReceivedEvent.toString());

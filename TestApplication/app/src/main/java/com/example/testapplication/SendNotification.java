@@ -5,6 +5,7 @@ import android.os.StrictMode;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 /**
@@ -14,7 +15,7 @@ import java.util.Scanner;
 public class SendNotification {
 
     //this method sends the notification to the user
-    public static void sendNotification(String player_id, String category, String product, String productUrl, String date) {
+    public static void sendNotification(String player_id, String category, String product, String productUrl) {
         //send a notification
         try {
             String jsonResponse;
@@ -45,7 +46,7 @@ public class SendNotification {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
 
-            byte[] sendBytes = strJsonBody.getBytes("UTF-8");
+            byte[] sendBytes = strJsonBody.getBytes(StandardCharsets.UTF_8);
             con.setFixedLengthStreamingMode(sendBytes.length);
 
             OutputStream outputStream = con.getOutputStream();
