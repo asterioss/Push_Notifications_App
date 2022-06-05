@@ -18,7 +18,6 @@ public class Deserializer<T extends Serializable>  {
         NotificationObject notif = null;
         try {
             notif = mapper.readValue(data, NotificationObject.class);
-
         } catch (Exception e) {
             e.printStackTrace();
         }

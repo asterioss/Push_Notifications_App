@@ -4,7 +4,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
@@ -18,15 +17,7 @@ import com.onesignal.OSSubscriptionObserver;
 import com.onesignal.OSSubscriptionStateChanges;
 import com.onesignal.OneSignal;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Random;
 
 /**
  * The Main Activity class, which is used when we have changes in the app
@@ -39,11 +30,6 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
     //used for the saving of values of the checkboxes
     private boolean check_tv, check_laptop, check_cellphone, check_bed, check_sofa, check_wash, check_oven, check_fridge, check_wardrobe, check_phone, check_air;
     TextView OurText;
-
-    //for MySQL database
-    public static final String DB_URL = "jdbc:mysql://192.168.1.7:3306/Cms?autoReconnect=true&useSSL=false";
-    public static final String USER = "root";
-    public static final String PASS = "root";
 
     //save the available devices
     static ArrayList<String> devices = new ArrayList<>();
@@ -59,113 +45,6 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
     static ArrayList<String> players_wardrobe = new ArrayList<>();
     static ArrayList<String> players_air = new ArrayList<>();
     static ArrayList<String> players_phone = new ArrayList<>();
-
-    //map the users with the available devices
-    public static HashMap<Integer, String> usersmapping = new HashMap<>();
-
-    //@RequiresApi(api = Build.VERSION_CODES.O)  //for the date
-    //this method takes the message from RabbitMQ and and it calls the 2nd RabbitMQ to send the notification to the user
-    public static void BeforeSend(int clientID, int product_id, int category_id) {
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
-        String product_name = null, category_name = null, product_url = null;
-        Connection conn;
-        Statement stmt;
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection(
-                    DB_URL, USER, PASS);
-            System.out.println("Connected to database successfully.");
-            stmt = conn.createStatement();
-            String sql = "SELECT * FROM cms.product_categories where id="+category_id+"";
-            ResultSet result = stmt.executeQuery(sql);
-
-            while(result.next()) {
-                category_name = result.getString("name");
-                System.out.println("Category: "+category_name);
-            }
-
-            sql = "SELECT * FROM cms.products where id="+product_id+"";
-            result = stmt.executeQuery(sql);
-
-            while(result.next()) {
-                product_name = result.getString("sku");
-                product_url = result.getString("productUrl");
-                System.out.println("Product: "+product_name);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } /*finally {
-            conn.close();
-        }*/
-
-        String player = null, send_player = null;
-
-        if(devices.size()>0) {
-            //Get the iterator over the HashMap
-            Iterator<Map.Entry<Integer, String> >
-                    iterator = usersmapping.entrySet().iterator();
-            //flag to store result
-            boolean keyExists = false;
-
-            //Iterate over the HashMap
-            while (iterator.hasNext()) {
-                //Get the entry at this iteration
-                Map.Entry<Integer, String>
-                        entry
-                        = iterator.next();
-
-                //Check if this key is the required key
-                if (clientID == entry.getKey()) {
-                    keyExists = true;
-                }
-            }
-
-            if(keyExists) {
-                player=usersmapping.get(clientID);
-                System.out.println("Player exists. "+player);
-            }
-            else {
-                //save a new player to hashmap
-                Random rand = new Random();
-                int random = rand.nextInt(devices.size());
-
-                usersmapping.put(clientID, devices.get(random));
-                player=usersmapping.get(clientID);
-                System.out.println("New Player. "+player);
-            }
-        }
-
-        if(player!=null) {
-            //match the category and check if player is subscibed
-            if (category_id == 1 && players_tv.contains(player)) send_player = player;
-            else if (category_id == 15 && players_fridge.contains(player)) send_player = player;
-            else if (category_id == 16 && players_wash.contains(player)) send_player = player;
-            else if (category_id == 17 && players_sofa.contains(player)) send_player = player;
-            else if (category_id == 18 && players_wardrobe.contains(player)) send_player = player;
-            else if (category_id == 19 && players_bed.contains(player)) send_player = player;
-            else if (category_id == 20 && players_air.contains(player)) send_player = player;
-            else if (category_id == 21 && players_cellphone.contains(player)) send_player = player;
-            else if (category_id == 22 && players_laptop.contains(player)) send_player = player;
-            else if (category_id == 23 && players_oven.contains(player)) send_player = player;
-            else if (category_id == 24 && players_phone.contains(player)) send_player = player;
-        }
-
-        //get the current date (if you want it for the notification)
-        /*String date;
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        LocalDateTime now = LocalDateTime.now();
-        //System.out.println(dtf.format(now));
-        date = dtf.format(now);*/
-
-        try {
-            //send the events to the second RabbitMQ service
-            Rabbit_SendEvents.SendEvents(send_player, category_name, product_name, product_url);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -203,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
     /*this method runs when activity is starting*/
     public void onStart() {
         super.onStart();
-        //pernoume tis times twn checkboxes
+        //we take the values of the checkboxes
         tv = findViewById(R.id.checkbox_tv);
         laptop = findViewById(R.id.checkbox_laptop);
         cellphone = findViewById(R.id.checkbox_cellphone);
@@ -537,7 +416,7 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
         OurText.setText("You subscribed successfully. You can leave the app now.");
     }
 
-    /*epistrefoun tous paiktes pou ekanan subscribe sto sygkekrimeno arraylist kathogorias*/
+    /*return the players who subscribed to the specific category*/
     public static ArrayList<String> getPlayersTV() {
         return players_tv;
     }
@@ -571,5 +450,10 @@ public class MainActivity extends AppCompatActivity implements OSPermissionObser
     public static ArrayList<String> getPlayersPhone() {
         return players_phone;
     }
+    /*return the available devices*/
+    public static ArrayList<String> getDevices() {
+        return devices;
+    }
+
 }
 

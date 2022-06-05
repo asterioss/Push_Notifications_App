@@ -54,4 +54,5 @@ public class NotificationServiceExtension implements OSRemoteNotificationReceive
         //To omit displaying a notification, pass `null` to complete()
         notificationReceivedEvent.complete(mutableNotification);
     }
+
 }

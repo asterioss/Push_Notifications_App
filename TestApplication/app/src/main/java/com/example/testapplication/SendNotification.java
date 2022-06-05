@@ -16,7 +16,7 @@ public class SendNotification {
 
     //this method sends the notification to the user
     public static void sendNotification(String player_id, String category, String product, String productUrl) {
-        //send a notification
+        //try to send a notification
         try {
             String jsonResponse;
 
@@ -27,7 +27,7 @@ public class SendNotification {
             con.setDoInput(true);
 
             con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            con.setRequestProperty("Authorization", "Basic ################################################");
+            con.setRequestProperty("Authorization", "Basic ZjI5MWU4MzgtNThkYS00OTM3LWE2NWYtOWFlNmVhMjlhOTdm");
             con.setRequestMethod("POST");
             String strJsonBody = "{"
                     +   "\"app_id\": \"1e9efea7-8568-4adb-acff-42527a5855bf\","
@@ -39,7 +39,6 @@ public class SendNotification {
                     +   "\"headings\": {\"en\": \"You are interested for "+product+".\"},"
                     +   "\"contents\": {\"en\": \"Category: "+category+".\"}"
                     + "}";
-
 
             System.out.println("strJsonBody:\n" + strJsonBody);
 
@@ -55,7 +54,7 @@ public class SendNotification {
             int httpResponse = con.getResponseCode();
             System.out.println("httpResponse: " + httpResponse);
 
-            if (httpResponse >= HttpURLConnection.HTTP_OK
+            if(httpResponse >= HttpURLConnection.HTTP_OK
                     && httpResponse < HttpURLConnection.HTTP_BAD_REQUEST) {
                 Scanner scanner = new Scanner(con.getInputStream(), "UTF-8");
                 jsonResponse = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";

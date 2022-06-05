@@ -125,7 +125,6 @@ public class ApplicationClass extends Application {
                 handle.postDelayed(this, delay);
             }
         }, delay);*/
-
     }
 
 }
