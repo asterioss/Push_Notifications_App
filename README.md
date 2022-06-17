@@ -25,7 +25,7 @@ For the practical part of the work, the application was developed in native Andr
 
 (Received client_id, category_id, product_id, where the specific client is interested for the specific product of the category)
 
-6. Open and run the project in Android Studio
+5. Open and run the project in Android Studio
 
 ## Use of the application
 The user just installs the application on his mobile phone and when the application is opened for the first time, he automatically subscribes to the push notifications of OneSignal (he can now receive notifications on his smartphone). Then the user sees the home screen, where there are different product categories and he has the freedom to subscribe in the categories that interest him and he wants to receive a notification.
