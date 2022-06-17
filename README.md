@@ -23,7 +23,7 @@ For the practical part of the work, the application was developed in native Andr
 
 ```[x] Received 22, 56, 22```
 
-(Received client_id, category_id, product_id, the specific client is interested for the specific product of the category).
+(Received client_id, category_id, product_id, where the specific client is interested for the specific product of the category)
 6. Open and run the project in Android Studio
 
 ## Use of the application
@@ -34,3 +34,4 @@ Below it is an illustration of the application model and it describes the proced
 
 <img width="700" src="https://user-images.githubusercontent.com/57050529/174345775-5daeef1b-e403-4c79-a75a-9b0a4df71f37.jpg">
 
+Initially, in step 1 the system starts with the Main Activity that provides the initial screen of the application to the user and and it initializes the OneSignal, which is needed after for the push notifications. At the same time, it calls a RabbitMQ service and in step 2 the application starts waiting to receive messages using RabbitMQ. Then, after the program receives the message (critical event) from my colleague's project, a second RabbitMQ service is called in step 3, where it is checked if the user (client) is subscribed in the specific category of the product that he is interested and it sends the appropriate message to OneSignal. In step 4 using the OneSignal API, in case the user has subscribed in the category, he receives a notification on his mobile with information or discounts for the specific product. Otherwise, if the user is not subscribed in the specific category, he doesn't receive a notification and the application continues to wait for messages.
