@@ -24,6 +24,7 @@ For the practical part of the work, the application was developed in native Andr
 ```[x] Received 22, 56, 22```
 
 (Received client_id, category_id, product_id, where the specific client is interested for the specific product of the category)
+
 6. Open and run the project in Android Studio
 
 ## Use of the application
