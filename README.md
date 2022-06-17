@@ -27,10 +27,10 @@ For the practical part of the work, the application was developed in native Andr
 6. Open and run the project in Android Studio
 
 ## Use of the application
-The user just installs the application on his mobile phone and when the application is opened for the first time, he subscribes to the push notifications of OneSignal (he can now receive notifications on his smartphone). Then the user sees the home screen, where there are different product categories and he has the freedom to register in the categories that interest him and he wants to receive a notification.
+The user just installs the application on his mobile phone and when the application is opened for the first time, he automatically subscribes to the push notifications of OneSignal (he can now receive notifications on his smartphone). Then the user sees the home screen, where there are different product categories and he has the freedom to subscribe in the categories that interest him and he wants to receive a notification.
 
 ## Execution of the application
 Below it is an illustration of the application model and it describes the procedure followed to send a notification to the user's mobile.
 
-<img width="600" src="https://user-images.githubusercontent.com/57050529/174345775-5daeef1b-e403-4c79-a75a-9b0a4df71f37.jpg">
+<img width="700" src="https://user-images.githubusercontent.com/57050529/174345775-5daeef1b-e403-4c79-a75a-9b0a4df71f37.jpg">
 
