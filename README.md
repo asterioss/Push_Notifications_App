@@ -2,7 +2,7 @@
 
 Push notifications are short messages that pop up on the user’s mobile or desktop and they are designed to catch the user's attention by prompting him to take some action. In short, push notifications are alerts that are "pushed" to the devices by applications, even when those applications aren't open.
 
-This project is the design and the implementation of an application that sends push notifications to an android device depending on the customer's position in a store. The user of the application has the ability to decide when he wants to receive a notification, by subscribing to the categories in which he is interested. 
+This project is the design and the implementation of an application that sends push notifications to an android device depending on the customer's position in a store. The user of the application has the ability to decide when he wants to receive a notification, by subscribing to the categories in which he is interested. Finally, the project is a part of the work ‘ProximIoT’ (proximiot.com) from ICS-FORTH, which aims to design and develop an IoT platform for Proximity Marketing.
 
 For the practical part of the work, the application was developed in native Android using Android Studio and writing in Java code. Also, I used the OneSignal API for sending push notifications, the RabbitMQ service for receiving messages (critical events) from an another project and the MySQL database for storing and searching information.
 
@@ -20,7 +20,9 @@ For the practical part of the work, the application was developed in native Andr
 4. Clone this project locally (https://github.com/Kampadais/EsperProducts) and run it. Μore specifically, I collaborated with a colleague on this project, where with the help of the RabbitMQ, the communication between our programs was achieved in order to transfer one or more messages. That is, once an important event is detected in the colleague's program (a customer of the store is close to a product for a long time), the application receives a message such as the following:
 
 ```[*] Waiting for messages. To exit press CTRL+C```
+
 ```[x] Received 22, 56, 22```
+
 (Received client_id, category_id, product_id, the specific client is interested for the specific product of the category).
 6. Open and run the project in Android Studio
 
