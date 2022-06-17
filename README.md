@@ -26,3 +26,4 @@ The user just installs the application on his mobile phone and when the applicat
 
 # Execution of the application
 Below it is an illustration of the application model and it describes the procedure followed to send a notification to the user's mobile.
+![model_app_ready](https://user-images.githubusercontent.com/57050529/174345775-5daeef1b-e403-4c79-a75a-9b0a4df71f37.jpg)
